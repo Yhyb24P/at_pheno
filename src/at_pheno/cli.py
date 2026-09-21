@@ -14,6 +14,7 @@ import numpy as np
 
 from .core import (additive_kernel, fit_qc, grouped_folds, marker_order,
                    predict, random_folds, scores, select)
+from .formal_provenance import gate_v2
 
 
 def write_json(path, value):
@@ -101,39 +102,6 @@ def load_dataset(directory, trait):
     return x, rows, aligned_ids, marker_ids, y, groups, audit
 
 
-def formal_provenance(directory, trait):
-    path = directory / "provenance.json"
-    if not path.is_file():
-        raise ValueError("Formal mode requires data/provenance.json")
-    try:
-        record = json.loads(path.read_text())
-    except json.JSONDecodeError as exc:
-        raise ValueError("Formal provenance is not valid JSON") from exc
-    required = {"dataset_id", "genotype_representation", "reference_assembly",
-                "source_urls", "input_sha256", "source_vcf_sha256", "conversion_script", "conversion_commit",
-                "allele_encoding", "phenotype_registry"}
-    missing = sorted(required-set(record))
-    if missing:
-        raise ValueError(f"Formal provenance missing fields: {', '.join(missing)}")
-    if record["genotype_representation"] != "vcf_alt_dosage":
-        raise ValueError("Formal CLI only accepts genotype_representation='vcf_alt_dosage'")
-    if not isinstance(record["source_urls"], list) or not record["source_urls"]:
-        raise ValueError("Formal provenance requires nonempty source_urls")
-    if record["reference_assembly"] != "TAIR10":
-        raise ValueError("Formal provenance requires reference_assembly='TAIR10'")
-    if record["allele_encoding"] != "ALT_dosage_0_1_2":
-        raise ValueError("Formal provenance requires ALT_dosage_0_1_2 encoding")
-    if not all(isinstance(record[key], str) and len(record[key]) == 64
-               for key in ("input_sha256", "source_vcf_sha256")):
-        raise ValueError("Formal provenance requires SHA256 hashes")
-    if record["input_sha256"] != sha256(directory / "genotypes.npy"):
-        raise ValueError("Formal provenance input_sha256 does not bind genotypes.npy")
-    registry = record["phenotype_registry"]
-    if not isinstance(registry, dict) or registry.get("trait_id") != trait or registry.get("resolved") is not True:
-        raise ValueError("Formal provenance requires resolved phenotype_registry for requested trait")
-    return path, record
-
-
 def save_qc(path, qc):
     np.savez_compressed(path, **vars(qc))
 
@@ -141,7 +109,10 @@ def save_qc(path, qc):
 def run(args):
     config = tomllib.loads(args.config.read_text())
     mode = getattr(args, "mode", "pilot")
-    formal_path, formal_record = (formal_provenance(args.data, args.trait) if mode == "formal" else (None, None))
+    formal_path, formal_record = (gate_v2(args.data, args.trait,
+                                          getattr(args, "source_vcf", None),
+                                          getattr(args, "registry", None))
+                                  if mode == "formal" else (None, None))
     x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
     if len(y) < 12:
         raise ValueError("Pilot requires at least 12 matched accessions")
@@ -241,6 +212,8 @@ def run(args):
     write_json(args.out/"omitted.json", omitted)
     inputs = [args.data/name for name in ("genotypes.npy", "samples.tsv", "variants.tsv", "phenotypes.tsv")]
     inputs += [args.config] + ([args.splits] if args.splits else []) + ([formal_path] if formal_path else [])
+    if mode == "formal":
+        inputs += [getattr(args, "source_vcf", None), getattr(args, "registry", None)]
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except subprocess.CalledProcessError:
@@ -292,6 +265,10 @@ def main():
     r.add_argument("--protocol", choices=["iid", "group"], default="iid")
     r.add_argument("--mode", choices=["pilot", "formal"], default="pilot")
     r.add_argument("--splits", type=Path, help="Frozen TSV accession_id/fold manifest")
+    r.add_argument("--source-vcf", type=Path, default=None,
+                   help="Formal v2 gate: source-variant file bound via source_vcf_sha256 recompute")
+    r.add_argument("--registry", type=Path, default=None,
+                   help="Formal v2 gate: trait-resolution registry TSV bound via registry_sha256 recompute")
     args = parser.parse_args()
     if args.command == "demo":
         demo(args.out)

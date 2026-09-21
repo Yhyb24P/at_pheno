@@ -75,22 +75,50 @@ def test_formal_mode_requires_alt_dosage_provenance(tmp_path):
         run(Namespace(data=data, trait="synthetic", config=config, out=tmp_path/"formal", protocol="iid", splits=None, mode="formal"))
 
 
+def _v2_record(data, source, registry, genotypes_sha256="0"*64):
+    return {
+        "provenance_schema": "at_pheno_formal_v2", "dataset_id": "test",
+        "genotypes_sha256": genotypes_sha256,
+        "samples_sha256": sha256(data/"samples.tsv"),
+        "variants_sha256": sha256(data/"variants.tsv"),
+        "phenotypes_sha256": sha256(data/"phenotypes.tsv"),
+        "registry_sha256": sha256(registry),
+        "source_vcf_sha256": sha256(source),
+        "official_source_md5": "0"*32,
+        "vcf_filter_policy": "PASS-only nuclear biallelic SNPs",
+        "multiallelic_policy": "multi-allelic excluded unsplittable",
+        "reference_assembly": "TAIR10", "allele_encoding": "ALT_dosage_0_1_2",
+        "conversion_script": "convert.py", "conversion_commit": "a"*40,
+        "notes": ["tiny synthetic pilot record"],
+        "phenotype_registry": {"trait_id": "synthetic", "resolved": True}}
+
+
 def test_formal_mode_binds_actual_genotype_hash_and_resolved_trait(tmp_path):
     data = tmp_path/"data"
     demo(data)
-    record = {"dataset_id": "test", "genotype_representation": "vcf_alt_dosage",
-              "reference_assembly": "TAIR10", "source_urls": ["https://example.test/source.vcf.gz"],
-              "input_sha256": "0" * 64, "source_vcf_sha256": "1" * 64,
-              "conversion_script": "convert.py", "conversion_commit": "a" * 40,
-              "allele_encoding": "ALT_dosage_0_1_2",
-              "phenotype_registry": {"trait_id": "synthetic", "resolved": True}}
-    write_json(data/"provenance.json", record)
+    source = tmp_path/"source.vcf"
+    source.write_text("##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tS1\n1\t100\t.\tA\tG\t.\tPASS\tGT\t0/0\n")
+    registry = tmp_path/"trait_resolution_v1.tsv"
+    registry.write_text("trait_id\ttarget_status\nsynthetic\tPUBLISHED_ACCESSION_VALUE_USABLE\n")
+    # v1 record (no provenance_schema key) is no longer accepted by the formal gate
+    v1 = {"dataset_id": "test", "genotype_representation": "vcf_alt_dosage",
+          "reference_assembly": "TAIR10", "source_urls": ["https://example.test/source.vcf.gz"],
+          "input_sha256": "0" * 64, "source_vcf_sha256": "1" * 64,
+          "conversion_script": "convert.py", "conversion_commit": "a" * 40,
+          "allele_encoding": "ALT_dosage_0_1_2",
+          "phenotype_registry": {"trait_id": "synthetic", "resolved": True}}
+    write_json(data/"provenance.json", v1)
     config = tmp_path/"test.toml"
     config.write_text('seed=7\nouter_folds=3\ninner_folds=2\ndensities=[16]\nalphas=[0.1]\nmin_call_rate=0.9\nmin_maf=0.05\nmin_mac=0\nblock_size=32\nhash_salt="test"\n')
-    args = Namespace(data=data, trait="synthetic", config=config, out=tmp_path/"formal", protocol="iid", splits=None, mode="formal")
+    args = Namespace(data=data, trait="synthetic", config=config, out=tmp_path/"formal", protocol="iid",
+                     splits=None, mode="formal", source_vcf=source, registry=registry)
+    with pytest.raises(ValueError, match="provenance_schema"):
+        run(args)
+    # v2 record with a wrong genotypes binding -> recompute-not-trust rejection
+    write_json(data/"provenance.json", _v2_record(data, source, registry))
     with pytest.raises(ValueError, match="does not bind"):
         run(args)
-    record["input_sha256"] = sha256(data/"genotypes.npy")
-    write_json(data/"provenance.json", record)
+    write_json(data/"provenance.json", _v2_record(data, source, registry,
+                                                   genotypes_sha256=sha256(data/"genotypes.npy")))
     run(args)
     assert (args.out/"provenance.json").is_file()
