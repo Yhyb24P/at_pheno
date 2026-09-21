@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "at_pheno: auditable Arabidopsis genomic prediction experiments"
+type: software
+authors:
+  - name: Yhyb24P
+repository-code: "https://github.com/Yhyb24P/at_pheno"
+license: MIT
+version: 0.1.0
+date-released: 2026-09-22

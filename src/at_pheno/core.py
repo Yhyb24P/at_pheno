@@ -19,6 +19,19 @@ class QC:
     mac: np.ndarray
 
 
+@dataclass
+class BinaryQC:
+    """QC for orientation-unknown, complete 0/1 marker calls.
+
+    The allele labelled 1 is deliberately not interpreted as ALT.  Flipping a
+    whole marker from 0↔1 leaves the centered relationship kernel unchanged.
+    """
+    columns: np.ndarray
+    means: np.ndarray
+    frequencies: np.ndarray
+    mac: np.ndarray
+
+
 def blocks(columns, size):
     if size < 1:
         raise ValueError("block_size must be positive")
@@ -57,6 +70,32 @@ def fit_qc(x, train, min_call_rate=0.95, min_maf=0.05, min_mac=0, block_size=409
               np.array(rates), np.array(macs))
 
 
+def fit_binary_qc(x, train, min_maf=0.05, min_mac=0, block_size=4096):
+    """Fit QC for complete binary calls with no allele-orientation claim."""
+    if not 0 <= min_maf <= 0.5 or min_mac < 0:
+        raise ValueError("Invalid binary QC thresholds")
+    train = np.asarray(train, dtype=int)
+    if len(train) < 2 or len(np.unique(train)) != len(train):
+        raise ValueError("At least two unique training samples are required")
+    kept, means, freqs, macs = [], [], [], []
+    for _, cols in blocks(np.arange(x.shape[1]), block_size):
+        g = np.asarray(x[np.ix_(train, cols)], dtype=float)
+        if np.any(~((g == 0) | (g == 1))):
+            raise ValueError("Expected complete binary calls 0/1")
+        mean = np.mean(g, axis=0)
+        mac = np.minimum(np.sum(g, axis=0), len(train)-np.sum(g, axis=0))
+        eligible = ((mac > 0) & (np.minimum(mean, 1-mean) >= min_maf)
+                    & (mac >= min_mac))
+        kept.extend(cols[eligible])
+        means.extend(mean[eligible])
+        freqs.extend(mean[eligible])
+        macs.extend(mac[eligible])
+    if not kept:
+        raise ValueError("No eligible binary markers in this training partition")
+    return BinaryQC(np.array(kept, dtype=int), np.array(means),
+                    np.array(freqs), np.array(macs))
+
+
 def marker_order(ids, salt):
     """Stable global hash ranking: nesting is exact, chromosome balance approximate."""
     if len(set(ids)) != len(ids):
@@ -91,6 +130,23 @@ def additive_kernel(x, train, test, qc, block_size=4096):
         b = np.asarray(x[np.ix_(test, cols)], dtype=float) - mean
         a = np.nan_to_num(a, nan=0.0)
         b = np.nan_to_num(b, nan=0.0)
+        k += a @ a.T
+        cross += b @ a.T
+    return k / denominator, cross / denominator
+
+
+def binary_additive_kernel(x, train, test, qc, block_size=4096):
+    """Orientation-invariant additive kernel for a BinaryQC fitted on train."""
+    train, test = np.asarray(train), np.asarray(test)
+    k = np.zeros((len(train), len(train)))
+    cross = np.zeros((len(test), len(train)))
+    denominator = float(np.sum(2 * qc.frequencies * (1 - qc.frequencies)))
+    if denominator <= 0:
+        raise ValueError("Degenerate binary kernel")
+    for start, cols in blocks(qc.columns, block_size):
+        mean = qc.means[start:start + len(cols)]
+        a = np.asarray(x[np.ix_(train, cols)], dtype=float) - mean
+        b = np.asarray(x[np.ix_(test, cols)], dtype=float) - mean
         k += a @ a.T
         cross += b @ a.T
     return k / denominator, cross / denominator

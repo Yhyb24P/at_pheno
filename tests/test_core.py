@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
 
-from at_pheno.core import additive_kernel, fit_qc, marker_order, predict, random_folds, scores, select
+from at_pheno.core import (additive_kernel, binary_additive_kernel, fit_binary_qc,
+                           fit_qc, marker_order, predict, random_folds, scores, select)
 
 
 def test_test_only_variant_is_excluded_and_test_values_cannot_change_qc():
@@ -58,3 +59,17 @@ def test_inner_qc_excludes_variant_seen_only_in_inner_validation():
     x = np.array([[0, 0], [2, 0], [0, 0], [2, 2]], dtype=float)
     assert fit_qc(x, [0, 1, 2, 3]).columns.tolist() == [0, 1]
     assert fit_qc(x, [0, 1, 2]).columns.tolist() == [0]
+
+
+def test_orientation_unknown_binary_kernel_is_allele_flip_invariant():
+    rng = np.random.default_rng(11)
+    x = rng.integers(0, 2, (10, 12), dtype=np.int8)
+    train, test = np.arange(7), np.arange(7, 10)
+    qc = fit_binary_qc(x, train, min_maf=0)
+    k, cross = binary_additive_kernel(x, train, test, qc, block_size=3)
+    flipped = x.copy()
+    flipped[:, [1, 4, 8]] = 1-flipped[:, [1, 4, 8]]
+    other = fit_binary_qc(flipped, train, min_maf=0)
+    fk, fcross = binary_additive_kernel(flipped, train, test, other, block_size=2)
+    np.testing.assert_allclose(k, fk)
+    np.testing.assert_allclose(cross, fcross)

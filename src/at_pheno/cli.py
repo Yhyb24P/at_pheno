@@ -50,13 +50,17 @@ def load_dataset(directory, trait):
     ids = [r["accession_id"] for r in samples]
     if not ids or len(set(ids)) != len(ids) or any(not s or s != s.strip() for s in ids):
         raise ValueError("Sample IDs must be unique nonempty canonical strings")
-    marker_ids = []
+    marker_ids, previous = [], None
     for row in variants:
         chrom, pos, ref, alt = (row[k] for k in ("chromosome", "position", "ref", "alt"))
         if chrom not in {"1", "2", "3", "4", "5"} or int(pos) < 1:
             raise ValueError("Require nuclear chromosome 1..5 and 1-based positions")
         if ref not in "ACGT" or alt not in "ACGT" or len(ref) != 1 or len(alt) != 1 or ref == alt:
             raise ValueError("Require biallelic SNP REF/ALT")
+        coordinate = (int(chrom), int(pos))
+        if previous is not None and coordinate <= previous:
+            raise ValueError("variants.tsv must be strictly ordered by chromosome then physical position")
+        previous = coordinate
         marker_ids.append(f"{chrom}:{pos}:{ref}:{alt}")
     if not marker_ids or len(set(marker_ids)) != len(marker_ids):
         raise ValueError("Empty or duplicate variant manifest")
@@ -97,12 +101,34 @@ def load_dataset(directory, trait):
     return x, rows, aligned_ids, marker_ids, y, groups, audit
 
 
+def formal_provenance(directory):
+    path = directory / "provenance.json"
+    if not path.is_file():
+        raise ValueError("Formal mode requires data/provenance.json")
+    try:
+        record = json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise ValueError("Formal provenance is not valid JSON") from exc
+    required = {"dataset_id", "genotype_representation", "reference_assembly",
+                "source_urls", "input_sha256", "phenotype_registry"}
+    missing = sorted(required-set(record))
+    if missing:
+        raise ValueError(f"Formal provenance missing fields: {', '.join(missing)}")
+    if record["genotype_representation"] != "vcf_alt_dosage":
+        raise ValueError("Formal CLI only accepts genotype_representation='vcf_alt_dosage'")
+    if not isinstance(record["source_urls"], list) or not record["source_urls"]:
+        raise ValueError("Formal provenance requires nonempty source_urls")
+    return path, record
+
+
 def save_qc(path, qc):
     np.savez_compressed(path, **vars(qc))
 
 
 def run(args):
     config = tomllib.loads(args.config.read_text())
+    mode = getattr(args, "mode", "pilot")
+    formal_path, formal_record = (formal_provenance(args.data) if mode == "formal" else (None, None))
     x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
     if len(y) < 12:
         raise ValueError("Pilot requires at least 12 matched accessions")
@@ -201,16 +227,16 @@ def run(args):
     write_json(args.out/"tuning.json", tuning)
     write_json(args.out/"omitted.json", omitted)
     inputs = [args.data/name for name in ("genotypes.npy", "samples.tsv", "variants.tsv", "phenotypes.tsv")]
-    inputs += [args.config] + ([args.splits] if args.splits else [])
+    inputs += [args.config] + ([args.splits] if args.splits else []) + ([formal_path] if formal_path else [])
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except subprocess.CalledProcessError:
         commit = None
     source_paths = sorted(Path(__file__).parent.glob("*.py"))
-    write_json(args.out/"provenance.json", {"status": "pilot_not_confirmatory", "code_commit": commit,
+    write_json(args.out/"provenance.json", {"status": "formal_protocol_not_yet_registered" if mode == "formal" else "pilot_not_confirmatory", "mode": mode, "code_commit": commit,
         "python": platform.python_version(), "numpy": np.__version__, "elapsed_seconds": time.monotonic()-started,
         "source_sha256": {str(p): sha256(p) for p in source_paths},
-        "input_sha256": {str(p): sha256(p) for p in inputs},
+        "input_sha256": {str(p): sha256(p) for p in inputs}, "formal_dataset_provenance": formal_record,
         "notes": ["Inner QC is refit, including frequency and eligibility.",
                   "IID protocol is not kinship controlled.",
                   "Pooled group PCC can be driven by between-group means; inspect fold metrics.",
@@ -251,6 +277,7 @@ def main():
     r.add_argument("--config", type=Path, default=Path("configs/pilot.toml"))
     r.add_argument("--out", type=Path, required=True)
     r.add_argument("--protocol", choices=["iid", "group"], default="iid")
+    r.add_argument("--mode", choices=["pilot", "formal"], default="pilot")
     r.add_argument("--splits", type=Path, help="Frozen TSV accession_id/fold manifest")
     args = parser.parse_args()
     if args.command == "demo":
