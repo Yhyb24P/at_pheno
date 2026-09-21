@@ -1,0 +1,188 @@
+{
+  "total_records": 12883854,
+  "nuclear_records": 12883854,
+  "per_chrom": {
+    "1": 3131891,
+    "2": 2244355,
+    "3": 2650671,
+    "4": 2125788,
+    "5": 2731149
+  },
+  "type_counts": {
+    "malformed": 0,
+    "non_nuclear": 0,
+    "multiallelic": 1113934,
+    "n_or_noncanonical": 0,
+    "indel_or_complex": 1062490,
+    "ref_equals_alt": 0,
+    "nuclear_biallelic_snp": 10707430
+  },
+  "catalog_rows": 10707430,
+  "excluded_examples": {
+    "malformed": [],
+    "non_nuclear": [],
+    "multiallelic": [
+      {
+        "chrom": "1",
+        "pos": 83,
+        "ref": "T",
+        "alts": [
+          "C",
+          "A"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 99,
+        "ref": "TCCCTAAA",
+        "alts": [
+          "ACCCTAAA",
+          "T"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 115,
+        "ref": "C",
+        "alts": [
+          "T",
+          "G"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 121,
+        "ref": "C",
+        "alts": [
+          "T",
+          "G"
+        ],
+        "filter": "PASS"
+      }
+    ],
+    "n_or_noncanonical": [],
+    "indel_or_complex": [
+      {
+        "chrom": "1",
+        "pos": 106,
+        "ref": "A",
+        "alts": [
+          "AC"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 162,
+        "ref": "GT",
+        "alts": [
+          "G"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 171,
+        "ref": "T",
+        "alts": [
+          "TA"
+        ],
+        "filter": "PASS"
+      },
+      {
+        "chrom": "1",
+        "pos": 187,
+        "ref": "TG",
+        "alts": [
+          "T"
+        ],
+        "filter": "PASS"
+      }
+    ],
+    "ref_equals_alt": []
+  },
+  "duplicate_chrom_position_pairs": 0,
+  "duplicate_chrom_position_ref_alt_quadruples": 0,
+  "catalog_sample_block": {
+    "first_rows": [
+      [
+        "1",
+        "55",
+        "C",
+        "T",
+        "1"
+      ],
+      [
+        "1",
+        "56",
+        "T",
+        "A",
+        "2"
+      ],
+      [
+        "1",
+        "63",
+        "T",
+        "C",
+        "3"
+      ],
+      [
+        "1",
+        "73",
+        "C",
+        "A",
+        "4"
+      ],
+      [
+        "1",
+        "75",
+        "T",
+        "A",
+        "5"
+      ]
+    ],
+    "last_rows": [
+      [
+        "5",
+        "26975437",
+        "G",
+        "A",
+        "12883850"
+      ],
+      [
+        "5",
+        "26975438",
+        "G",
+        "C",
+        "12883851"
+      ],
+      [
+        "5",
+        "26975445",
+        "G",
+        "A",
+        "12883852"
+      ],
+      [
+        "5",
+        "26975448",
+        "T",
+        "C",
+        "12883853"
+      ],
+      [
+        "5",
+        "26975450",
+        "G",
+        "A",
+        "12883854"
+      ]
+    ],
+    "catalog_file": "1001g_v31_biallelic_snp_catalog.tsv.gz",
+    "catalog_file_sha256": "31649a02b053928bb4eb54065e551414f68e1747d185933801ffff5f206d3b59",
+    "note": "deterministic sample block + catalog gz SHA256: the small summary stays under git, the catalog gz does not"
+  }
+}

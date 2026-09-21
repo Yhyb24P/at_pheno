@@ -1,0 +1,26 @@
+{
+  "series": "1001g_v31_population_vcf_source",
+  "vcf_path": "data/raw/1001g_v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz",
+  "file_bytes": 19230910695,
+  "source_url": "https://1001genomes.org/data/GMI-MPI/releases/v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz",
+  "download_time": "aria2c session completed 2026-09-21T20:30:30Z (file mtime UTC; mis-typed 1970 session stamp discarded)",
+  "download_tool": "aria2c -c -x8 -s8 (resumed via control file)",
+  "official_md5": "a29dec1389cf31c2d18ecd76947d4e54",
+  "local_md5": "a29dec1389cf31c2d18ecd76947d4e54",
+  "md5_matches_official": true,
+  "local_sha256": "7f825afb784b2424e35501fd8b88c32a4798013eb9fe762724addfb249007e7a",
+  "sha256_is_64_hex": true,
+  "stream_encoding": "gzip",
+  "encoder_note": "encoder tool family not identified; plain-gz and .bgzip both carry the gzip magic and stream through the stdlib gzip reader; no bcftools re-decode was performed",
+  "catalog_streaming": "pure-Python streaming reader; the catalog was never re-decoded via bcftools, and the VCF was never unpacked into a plaintext temp file",
+  "bcftools_header_probe": {
+    "bcftools_path": "/home/yhshy/miniconda3/envs/audit-1001g/bin/bcftools",
+    "bcftools_version": "bcftools 1.24",
+    "view_header_exit_0": true,
+    "probe_error": null
+  },
+  "claims_not_supported_by_this_audit": [
+    "HDF5 0/1 state semantics (HDF5-side script owns that side)",
+    "GT dosage: no GT value is ever rescaled by ploidy"
+  ]
+}

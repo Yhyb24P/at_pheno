@@ -1,0 +1,150 @@
+{
+  "window": {
+    "chroms": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "records_per_chrom_cap": 400,
+    "n_records_audited": 2000,
+    "format_column_assumed": true,
+    "sample_fields_width_mismatch": null,
+    "note": "bounded window; no full genotype matrix; GT states are reported as-is -- no GT=1==HDF5-ALT and no dosage assumption"
+  },
+  "per_chrom": {
+    "1": {
+      "n_records": 400,
+      "n_cells": 454000,
+      "ploidy": {
+        "1": 0,
+        "2": 454000,
+        ">2": 0
+      },
+      "phased_cells": 388686,
+      "unphased_cells": 65314,
+      "n_haploid_gt_cells": 0,
+      "haploid_gt_present": false,
+      "states": {
+        "ref_homo": 380234,
+        "heterozygous": 0,
+        "alt_homo": 8452,
+        "missing": 65314,
+        "partial_missing": 0,
+        "allele_index_gt_1": 0,
+        "no_gt": 0
+      }
+    },
+    "2": {
+      "n_records": 400,
+      "n_cells": 454000,
+      "ploidy": {
+        "1": 0,
+        "2": 454000,
+        ">2": 0
+      },
+      "phased_cells": 111682,
+      "unphased_cells": 342318,
+      "n_haploid_gt_cells": 0,
+      "haploid_gt_present": false,
+      "states": {
+        "ref_homo": 107530,
+        "heterozygous": 0,
+        "alt_homo": 4152,
+        "missing": 342318,
+        "partial_missing": 0,
+        "allele_index_gt_1": 0,
+        "no_gt": 0
+      }
+    },
+    "3": {
+      "n_records": 400,
+      "n_cells": 454000,
+      "ploidy": {
+        "1": 0,
+        "2": 454000,
+        ">2": 0
+      },
+      "phased_cells": 403941,
+      "unphased_cells": 50059,
+      "n_haploid_gt_cells": 0,
+      "haploid_gt_present": false,
+      "states": {
+        "ref_homo": 394374,
+        "heterozygous": 0,
+        "alt_homo": 9567,
+        "missing": 50059,
+        "partial_missing": 0,
+        "allele_index_gt_1": 0,
+        "no_gt": 0
+      }
+    },
+    "4": {
+      "n_records": 400,
+      "n_cells": 454000,
+      "ploidy": {
+        "1": 0,
+        "2": 454000,
+        ">2": 0
+      },
+      "phased_cells": 389844,
+      "unphased_cells": 64156,
+      "n_haploid_gt_cells": 0,
+      "haploid_gt_present": false,
+      "states": {
+        "ref_homo": 374877,
+        "heterozygous": 0,
+        "alt_homo": 14967,
+        "missing": 64156,
+        "partial_missing": 0,
+        "allele_index_gt_1": 0,
+        "no_gt": 0
+      }
+    },
+    "5": {
+      "n_records": 400,
+      "n_cells": 454000,
+      "ploidy": {
+        "1": 0,
+        "2": 454000,
+        ">2": 0
+      },
+      "phased_cells": 409528,
+      "unphased_cells": 44472,
+      "n_haploid_gt_cells": 0,
+      "haploid_gt_present": false,
+      "states": {
+        "ref_homo": 397837,
+        "heterozygous": 0,
+        "alt_homo": 11691,
+        "missing": 44472,
+        "partial_missing": 0,
+        "allele_index_gt_1": 0,
+        "no_gt": 0
+      }
+    }
+  },
+  "combined": {
+    "n_records": 2000,
+    "n_cells": 2270000,
+    "ploidy": {
+      "1": 0,
+      "2": 2270000,
+      ">2": 0
+    },
+    "phased_cells": 1703681,
+    "unphased_cells": 566319,
+    "n_haploid_gt_cells": 0,
+    "haploid_gt_present": false,
+    "states": {
+      "ref_homo": 1654852,
+      "heterozygous": 0,
+      "alt_homo": 48829,
+      "missing": 566319,
+      "partial_missing": 0,
+      "allele_index_gt_1": 0,
+      "no_gt": 0
+    }
+  }
+}
