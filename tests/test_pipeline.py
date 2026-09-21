@@ -1,7 +1,7 @@
 from argparse import Namespace
 import pytest
 
-from at_pheno.cli import demo, load_dataset, read_table, run, write_table
+from at_pheno.cli import demo, load_dataset, read_table, run, sha256, write_json, write_table
 from at_pheno.core import random_folds
 
 
@@ -73,3 +73,24 @@ def test_formal_mode_requires_alt_dosage_provenance(tmp_path):
     config.write_text('seed=7\nouter_folds=3\ninner_folds=2\ndensities=[16]\nalphas=[0.1]\nmin_call_rate=0.9\nmin_maf=0.05\nmin_mac=0\nblock_size=32\nhash_salt="test"\n')
     with pytest.raises(ValueError, match="Formal provenance"):
         run(Namespace(data=data, trait="synthetic", config=config, out=tmp_path/"formal", protocol="iid", splits=None, mode="formal"))
+
+
+def test_formal_mode_binds_actual_genotype_hash_and_resolved_trait(tmp_path):
+    data = tmp_path/"data"
+    demo(data)
+    record = {"dataset_id": "test", "genotype_representation": "vcf_alt_dosage",
+              "reference_assembly": "TAIR10", "source_urls": ["https://example.test/source.vcf.gz"],
+              "input_sha256": "0" * 64, "source_vcf_sha256": "1" * 64,
+              "conversion_script": "convert.py", "conversion_commit": "a" * 40,
+              "allele_encoding": "ALT_dosage_0_1_2",
+              "phenotype_registry": {"trait_id": "synthetic", "resolved": True}}
+    write_json(data/"provenance.json", record)
+    config = tmp_path/"test.toml"
+    config.write_text('seed=7\nouter_folds=3\ninner_folds=2\ndensities=[16]\nalphas=[0.1]\nmin_call_rate=0.9\nmin_maf=0.05\nmin_mac=0\nblock_size=32\nhash_salt="test"\n')
+    args = Namespace(data=data, trait="synthetic", config=config, out=tmp_path/"formal", protocol="iid", splits=None, mode="formal")
+    with pytest.raises(ValueError, match="does not bind"):
+        run(args)
+    record["input_sha256"] = sha256(data/"genotypes.npy")
+    write_json(data/"provenance.json", record)
+    run(args)
+    assert (args.out/"provenance.json").is_file()

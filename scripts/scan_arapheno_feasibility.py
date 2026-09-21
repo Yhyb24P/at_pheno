@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 import time
 import urllib.error
@@ -31,6 +32,20 @@ def fetch_json(url, retries=3):
             if attempt == retries-1:
                 raise
             time.sleep(2**attempt)
+
+
+def phenotype_counts(values, panel_ids):
+    ids = [str(row["accession_id"]) for row in values]
+    finite_rows = [row for row in values if isinstance(row.get("phenotype_value"), (int, float))
+                   and math.isfinite(row["phenotype_value"])]
+    finite_ids = [str(row["accession_id"]) for row in finite_rows]
+    counts = Counter(ids)
+    return {"raw_row_n": len(values), "finite_row_n": len(finite_rows),
+            "unique_accession_n": len(counts), "finite_unique_accession_n": len(set(finite_ids)),
+            "panel_intersection_n": len(set(ids) & panel_ids),
+            "finite_panel_intersection_n": len(set(finite_ids) & panel_ids),
+            "duplicate_accession_n": sum(n > 1 for n in counts.values()),
+            "max_rows_per_accession": max(counts.values(), default=0)}, ids, counts, finite_ids
 
 
 def main():
@@ -64,16 +79,12 @@ def main():
         values, digest = fetch_json(f"{BASE}{trait}/values.json")
         path = raw_dir/f"{trait}.json"
         path.write_text(json.dumps(values, ensure_ascii=False)+"\n")
-        ids = [str(row["accession_id"]) for row in values]
-        counts = Counter(ids)
+        counts_summary, ids, counts, _ = phenotype_counts(values, panel_ids)
         matched = set(ids) & panel_ids
         return {"trait_id": trait, "name": meta.get("name"), "study": meta.get("study"),
                 "doi": meta.get("doi"), "unit": meta.get("uo_name"),
                 "growth_conditions": meta.get("growth_conditions"), "catalog_num_values": meta.get("num_values"),
-                "raw_row_n": len(values), "unique_accession_n": len(counts),
-                "panel_intersection_n": len(matched),
-                "duplicate_accession_n": sum(n > 1 for n in counts.values()),
-                "max_rows_per_accession": max(counts.values(), default=0),
+                **counts_summary,
                 "group_counts": json.dumps(dict(sorted(Counter(groups[s] for s in matched).items()))),
                 "values_sha256": digest, "retrieval_status": "ok", "error": ""}
 

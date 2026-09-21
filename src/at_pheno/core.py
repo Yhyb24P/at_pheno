@@ -28,8 +28,8 @@ class BinaryQC:
     """
     columns: np.ndarray
     means: np.ndarray
-    frequencies: np.ndarray
-    mac: np.ndarray
+    state_one_frequencies: np.ndarray
+    minor_state_count: np.ndarray
 
 
 def blocks(columns, size):
@@ -70,9 +70,9 @@ def fit_qc(x, train, min_call_rate=0.95, min_maf=0.05, min_mac=0, block_size=409
               np.array(rates), np.array(macs))
 
 
-def fit_binary_qc(x, train, min_maf=0.05, min_mac=0, block_size=4096):
+def fit_binary_qc(x, train, min_minor_state_frequency=0.05, min_minor_state_count=0, block_size=4096):
     """Fit QC for complete binary calls with no allele-orientation claim."""
-    if not 0 <= min_maf <= 0.5 or min_mac < 0:
+    if not 0 <= min_minor_state_frequency <= 0.5 or min_minor_state_count < 0:
         raise ValueError("Invalid binary QC thresholds")
     train = np.asarray(train, dtype=int)
     if len(train) < 2 or len(np.unique(train)) != len(train):
@@ -84,8 +84,8 @@ def fit_binary_qc(x, train, min_maf=0.05, min_mac=0, block_size=4096):
             raise ValueError("Expected complete binary calls 0/1")
         mean = np.mean(g, axis=0)
         mac = np.minimum(np.sum(g, axis=0), len(train)-np.sum(g, axis=0))
-        eligible = ((mac > 0) & (np.minimum(mean, 1-mean) >= min_maf)
-                    & (mac >= min_mac))
+        eligible = ((mac > 0) & (np.minimum(mean, 1-mean) >= min_minor_state_frequency)
+                    & (mac >= min_minor_state_count))
         kept.extend(cols[eligible])
         means.extend(mean[eligible])
         freqs.extend(mean[eligible])
@@ -113,8 +113,7 @@ def select(qc, order, density):
         eligible = eligible[:density]
     # Restore physical/manifest order for reproducible matrix accumulation.
     chosen = np.sort(eligible)
-    return QC(*(getattr(qc, field)[chosen] for field in
-                ("columns", "means", "frequencies", "call_rates", "mac")))
+    return type(qc)(*(getattr(qc, field)[chosen] for field in vars(qc)))
 
 
 def additive_kernel(x, train, test, qc, block_size=4096):
@@ -140,7 +139,9 @@ def binary_additive_kernel(x, train, test, qc, block_size=4096):
     train, test = np.asarray(train), np.asarray(test)
     k = np.zeros((len(train), len(train)))
     cross = np.zeros((len(test), len(train)))
-    denominator = float(np.sum(2 * qc.frequencies * (1 - qc.frequencies)))
+    # This is a binary-state relationship kernel, not diploid GBLUP:
+    # Var(state)=p(1-p), and p is orientation-unknown.
+    denominator = float(np.sum(qc.state_one_frequencies * (1 - qc.state_one_frequencies)))
     if denominator <= 0:
         raise ValueError("Degenerate binary kernel")
     for start, cols in blocks(qc.columns, block_size):

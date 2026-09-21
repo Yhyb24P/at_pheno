@@ -62,4 +62,4 @@ reference/BiMSGP/     独立上游checkout（忽略；固定SHA见reference/READ
 runs/                 每次运行的原始预测与完整记录（忽略）
 ```
 
-已核验HDF5为1135×10,709,949，且全文件只含0/1；全库 AraPheno feasibility registry 已生成，但尚未解决候选性状的来源级重复/汇总语义。运行时有12项测试，含物理排序、group嵌套隔离、二态全位点翻转不变性及 formal provenance gate。下一步补齐REF/ALT与原始缺失语义、处理重复记录、标定近亲块并注册确认性统计，再冻结性状与划分。PC-only、LD/RKHS/多核、标准GBLUP外部一致性及结构化SSM尚未实现；不以合成自检或理论复杂度宣称真实全密度预测成功。
+已核验HDF5为1135×10,709,949，且全文件只含0/1；全库 AraPheno feasibility registry 已生成并计入非有限值过滤，但尚未解决候选性状的来源级重复/汇总语义。运行时有15项测试，含物理排序、group嵌套隔离、二态全位点翻转不变性、扫描 minority-state 边界及 formal provenance binding。下一步补齐REF/ALT与原始缺失语义、处理重复记录、标定近亲块并注册确认性统计，再冻结性状与划分。HDF5 尚无完整 density prediction runner；PC-only、LD/RKHS/多核、标准GBLUP外部一致性及结构化SSM也尚未实现；不以合成自检或理论复杂度宣称真实全密度预测成功。

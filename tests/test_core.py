@@ -65,11 +65,11 @@ def test_orientation_unknown_binary_kernel_is_allele_flip_invariant():
     rng = np.random.default_rng(11)
     x = rng.integers(0, 2, (10, 12), dtype=np.int8)
     train, test = np.arange(7), np.arange(7, 10)
-    qc = fit_binary_qc(x, train, min_maf=0)
+    qc = fit_binary_qc(x, train, min_minor_state_frequency=0)
     k, cross = binary_additive_kernel(x, train, test, qc, block_size=3)
     flipped = x.copy()
     flipped[:, [1, 4, 8]] = 1-flipped[:, [1, 4, 8]]
-    other = fit_binary_qc(flipped, train, min_maf=0)
+    other = fit_binary_qc(flipped, train, min_minor_state_frequency=0)
     fk, fcross = binary_additive_kernel(flipped, train, test, other, block_size=2)
     np.testing.assert_allclose(k, fk)
     np.testing.assert_allclose(cross, fcross)

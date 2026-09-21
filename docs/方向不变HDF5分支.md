@@ -4,7 +4,7 @@
 
 ## 已核验
 
-完整文件扫描的输入 SHA256 为 `f3713e66f017187fb3d30b8d6b854794393ab259e6b5bae4b18ca2cafcbb1862`。`snps` 为10,709,949×1135的binary矩阵；五条染色体分别为2,597,825、1,868,869、2,194,365、1,767,088、2,281,802个位点。全文件扫描未发现非0/1值；全体样本下各染色体MAC≥5的位点数分别为1,177,150、833,790、988,820、798,347、1,048,941，合计4,846,048。完整原始报告在忽略的`data/raw/hdf5_binary_scan_2026-09-22/`；运行同一脚本可重建。
+完整文件扫描的输入 SHA256 为 `f3713e66f017187fb3d30b8d6b854794393ab259e6b5bae4b18ca2cafcbb1862`。`snps` 为10,709,949×1135的binary矩阵；五条染色体分别为2,597,825、1,868,869、2,194,365、1,767,088、2,281,802个位点。全文件扫描未发现非0/1值；按 `min(k,1135-k)≥5` 的**minority-state accession count**，各染色体为1,176,653、833,591、988,524、798,131、1,048,861，合计4,845,760。它不是 VCF ALT dosage 的 MAF/MAC。完整原始报告在忽略的`data/raw/hdf5_binary_scan_2026-09-22_corrected_v2/`；运行同一脚本可重建。
 
 这里的1只表示该文件的二态编码状态，**不解释为ALT allele**。对训练样本中心化的二态矩阵 Z，逐位点全体翻转使 Z 变为−Z，因此关系矩阵 ZZᵀ 不变。代码以独立的`BinaryQC`、`fit_binary_qc()`和`binary_additive_kernel()`实现这一约束；测试验证任意三个位点的0↔1翻转不会改变训练或测试核。
 
@@ -13,7 +13,7 @@
 - 在固定binary编码和训练内频率筛选下，密度梯度的 additive relationship 是否已饱和。
 - PCA、IBS/kinship和近克隆候选的样本结构；这些输出用于冻结划分，不把它们当作表型模型的训练内特征。
 - 物理位置及染色体边界的工程可行性、marker数量、读取时间和显存/CPU成本。
-- 对方向不敏感的 MAF/MAC、carrier count 和 hash-density 组成审计。
+- 对方向不敏感的 minor-state frequency/count、carrier count 和 hash-density 组成审计。
 
 ## 不能回答的问题
 
@@ -22,7 +22,7 @@
 - REF/ALT依赖的功能注释、sequence-context variant effect和等位基因特异解释。
 - 需要原始VCF语义的确认性结论。
 
-因此，HDF5的pilot必须在产物中标记`orientation_unknown_binary`和`pilot_not_confirmatory`。当前通用CLI拒绝将此表示用于`--mode formal`；不能为绕过门禁把0/1转换成伪ALT dosage。
+因此，HDF5的pilot必须在产物中标记`orientation_unknown_binary`和`pilot_not_confirmatory`。当前通用CLI只接受显式标注为`vcf_alt_dosage`、且输入 hash 与 `genotypes.npy` 绑定的 formal 输入；不能为绕过门禁把0/1转换成伪ALT dosage。正式 VCF 本身的来源 hash、转换脚本/commit、TAIR10、ALT encoding 与 resolved trait registry 也必须同时通过检查。
 
 ## 计算边界
 

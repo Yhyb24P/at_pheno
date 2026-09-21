@@ -32,6 +32,22 @@ def components(matrix: np.ndarray, threshold: float) -> list[list[int]]:
     return result
 
 
+def component_diagnostics(matrix: np.ndarray, groups: list[list[int]], threshold: float) -> list[dict]:
+    records = []
+    for block_id, members in enumerate(groups):
+        size = len(members)
+        if size == 1:
+            minimum, edge_density = None, 0.0
+        else:
+            values = matrix[np.ix_(members, members)]
+            lower = values[np.tril_indices(size, k=-1)]
+            minimum = float(np.min(lower))
+            edge_density = float(np.mean(lower >= threshold))
+        records.append({"candidate_block": block_id, "size": size,
+                        "min_pairwise_similarity": minimum, "edge_density": edge_density})
+    return records
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kinship", type=Path, required=True)
@@ -61,10 +77,17 @@ def main() -> None:
             writer.writerow(["candidate_block", "accession_id"])
             for block_id, members in enumerate(groups):
                 writer.writerows((block_id, ids[index]) for index in members)
+        diagnostics = component_diagnostics(kinship, groups, threshold)
+        with (args.out / f"components_ge_{threshold:g}_diagnostics.tsv").open("w", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(diagnostics[0]), delimiter="\t")
+            writer.writeheader()
+            writer.writerows(diagnostics)
         sizes = [len(group) for group in groups]
         summary["thresholds"][str(threshold)] = {"n_components": len(groups),
             "n_multimember_components": sum(size > 1 for size in sizes),
-            "largest_component": max(sizes), "accessions_in_multimember_components": sum(size for size in sizes if size > 1)}
+            "largest_component": max(sizes), "accessions_in_multimember_components": sum(size for size in sizes if size > 1),
+            "largest_component_min_pairwise_similarity": diagnostics[0]["min_pairwise_similarity"],
+            "largest_component_edge_density": diagnostics[0]["edge_density"]}
     (args.out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
 
 

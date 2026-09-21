@@ -5,8 +5,8 @@ import csv
 from pathlib import Path
 
 
-KEEP = ["trait_id", "name", "study", "doi", "unit", "catalog_num_values", "raw_row_n",
-        "unique_accession_n", "panel_intersection_n", "duplicate_accession_n",
+KEEP = ["trait_id", "name", "study", "doi", "unit", "catalog_num_values", "raw_row_n", "finite_row_n",
+        "unique_accession_n", "finite_unique_accession_n", "panel_intersection_n", "finite_panel_intersection_n", "duplicate_accession_n",
         "max_rows_per_accession", "group_counts", "values_sha256", "retrieval_status"]
 
 
@@ -21,7 +21,7 @@ def main() -> None:
         raise ValueError("Registry contains failed retrievals")
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=KEEP, delimiter="\t")
+        writer = csv.DictWriter(stream, fieldnames=KEEP, delimiter="\t", lineterminator="\n")
         writer.writeheader()
         writer.writerows({field: row[field] for field in KEEP} for row in rows)
 

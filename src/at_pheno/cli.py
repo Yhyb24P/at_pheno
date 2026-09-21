@@ -57,9 +57,9 @@ def load_dataset(directory, trait):
             raise ValueError("Require nuclear chromosome 1..5 and 1-based positions")
         if ref not in "ACGT" or alt not in "ACGT" or len(ref) != 1 or len(alt) != 1 or ref == alt:
             raise ValueError("Require biallelic SNP REF/ALT")
-        coordinate = (int(chrom), int(pos))
+        coordinate = (int(chrom), int(pos), ref, alt)
         if previous is not None and coordinate <= previous:
-            raise ValueError("variants.tsv must be strictly ordered by chromosome then physical position")
+            raise ValueError("variants.tsv must be strictly ordered by chromosome, position, REF, ALT")
         previous = coordinate
         marker_ids.append(f"{chrom}:{pos}:{ref}:{alt}")
     if not marker_ids or len(set(marker_ids)) != len(marker_ids):
@@ -101,7 +101,7 @@ def load_dataset(directory, trait):
     return x, rows, aligned_ids, marker_ids, y, groups, audit
 
 
-def formal_provenance(directory):
+def formal_provenance(directory, trait):
     path = directory / "provenance.json"
     if not path.is_file():
         raise ValueError("Formal mode requires data/provenance.json")
@@ -110,7 +110,8 @@ def formal_provenance(directory):
     except json.JSONDecodeError as exc:
         raise ValueError("Formal provenance is not valid JSON") from exc
     required = {"dataset_id", "genotype_representation", "reference_assembly",
-                "source_urls", "input_sha256", "phenotype_registry"}
+                "source_urls", "input_sha256", "source_vcf_sha256", "conversion_script", "conversion_commit",
+                "allele_encoding", "phenotype_registry"}
     missing = sorted(required-set(record))
     if missing:
         raise ValueError(f"Formal provenance missing fields: {', '.join(missing)}")
@@ -118,6 +119,18 @@ def formal_provenance(directory):
         raise ValueError("Formal CLI only accepts genotype_representation='vcf_alt_dosage'")
     if not isinstance(record["source_urls"], list) or not record["source_urls"]:
         raise ValueError("Formal provenance requires nonempty source_urls")
+    if record["reference_assembly"] != "TAIR10":
+        raise ValueError("Formal provenance requires reference_assembly='TAIR10'")
+    if record["allele_encoding"] != "ALT_dosage_0_1_2":
+        raise ValueError("Formal provenance requires ALT_dosage_0_1_2 encoding")
+    if not all(isinstance(record[key], str) and len(record[key]) == 64
+               for key in ("input_sha256", "source_vcf_sha256")):
+        raise ValueError("Formal provenance requires SHA256 hashes")
+    if record["input_sha256"] != sha256(directory / "genotypes.npy"):
+        raise ValueError("Formal provenance input_sha256 does not bind genotypes.npy")
+    registry = record["phenotype_registry"]
+    if not isinstance(registry, dict) or registry.get("trait_id") != trait or registry.get("resolved") is not True:
+        raise ValueError("Formal provenance requires resolved phenotype_registry for requested trait")
     return path, record
 
 
@@ -128,7 +141,7 @@ def save_qc(path, qc):
 def run(args):
     config = tomllib.loads(args.config.read_text())
     mode = getattr(args, "mode", "pilot")
-    formal_path, formal_record = (formal_provenance(args.data) if mode == "formal" else (None, None))
+    formal_path, formal_record = (formal_provenance(args.data, args.trait) if mode == "formal" else (None, None))
     x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
     if len(y) < 12:
         raise ValueError("Pilot requires at least 12 matched accessions")
@@ -233,7 +246,7 @@ def run(args):
     except subprocess.CalledProcessError:
         commit = None
     source_paths = sorted(Path(__file__).parent.glob("*.py"))
-    write_json(args.out/"provenance.json", {"status": "formal_protocol_not_yet_registered" if mode == "formal" else "pilot_not_confirmatory", "mode": mode, "code_commit": commit,
+    write_json(args.out/"provenance.json", {"status": "formal_data_contract_passed_not_confirmatory" if mode == "formal" else "pilot_not_confirmatory", "mode": mode, "code_commit": commit,
         "python": platform.python_version(), "numpy": np.__version__, "elapsed_seconds": time.monotonic()-started,
         "source_sha256": {str(p): sha256(p) for p in source_paths},
         "input_sha256": {str(p): sha256(p) for p in inputs}, "formal_dataset_provenance": formal_record,
