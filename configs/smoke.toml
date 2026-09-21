@@ -1,0 +1,10 @@
+seed = 20260922
+outer_folds = 3
+inner_folds = 3
+densities = [16, 64, "all"]
+alphas = [0.01, 0.1, 1.0, 10.0]
+min_call_rate = 0.90
+min_maf = 0.05
+min_mac = 0
+block_size = 32
+hash_salt = "smoke-v1"

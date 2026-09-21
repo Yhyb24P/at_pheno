@@ -1,0 +1,128 @@
+{
+  "catalog_phenotypes": 536,
+  "catalog_studies_by_title": 28,
+  "warning": "API row counts are not verified genotype intersections or independent endpoints.",
+  "sources": [
+    {
+      "url": "https://arapheno.1001genomes.org/rest/phenotype/list.json",
+      "filename": "phenotype_list.json",
+      "retrieved_at": "2026-09-21T17:41:32.566257+00:00",
+      "resolved_url": "https://arapheno.1001genomes.org/rest/phenotype/list.json",
+      "status": "ok",
+      "bytes": 923166,
+      "sha256": "b5cb8ede0b26e86506e1854f086c66967647a9e4afea8e47840aad8f1a283a73"
+    },
+    {
+      "url": "https://arapheno.1001genomes.org/rest/phenotype/261.json",
+      "filename": "phenotype_261.json",
+      "retrieved_at": "2026-09-21T17:41:56.264791+00:00",
+      "resolved_url": "https://arapheno.1001genomes.org/rest/phenotype/261.json",
+      "status": "ok",
+      "bytes": 2131,
+      "sha256": "7ea481a5f7dd0384032de65d52c7d0d6cdd2946bae97c434b24cb7a570296a68"
+    },
+    {
+      "url": "https://arapheno.1001genomes.org/rest/phenotype/261/values.json",
+      "filename": "values_261.json",
+      "retrieved_at": "2026-09-21T17:41:57.331054+00:00",
+      "resolved_url": "https://arapheno.1001genomes.org/rest/phenotype/261/values.json",
+      "status": "ok",
+      "bytes": 268950,
+      "sha256": "f9c1b9621cfb9b5267c3c65575a390ce55311a736940957e52ff0cd15869a47b"
+    },
+    {
+      "url": "https://arapheno.1001genomes.org/rest/phenotype/262.json",
+      "filename": "phenotype_262.json",
+      "retrieved_at": "2026-09-21T17:42:05.405300+00:00",
+      "resolved_url": "https://arapheno.1001genomes.org/rest/phenotype/262.json",
+      "status": "ok",
+      "bytes": 2128,
+      "sha256": "6fd6866e14199bfa0c7f4c4ebfe5419a0dc8800fdc259cf3638b4a97abb4e3bc"
+    },
+    {
+      "url": "https://arapheno.1001genomes.org/rest/phenotype/262/values.json",
+      "filename": "values_262.json",
+      "retrieved_at": "2026-09-21T17:42:09.201362+00:00",
+      "resolved_url": "https://arapheno.1001genomes.org/rest/phenotype/262/values.json",
+      "status": "ok",
+      "bytes": 260432,
+      "sha256": "9ae5346296dd080e2c5ddcb994b1a7393f72eb171de38659659f51d41a819654"
+    }
+  ],
+  "candidates": [
+    {
+      "phenotype_id": 261,
+      "name": "FT10",
+      "doi": "10.21958/phenotype:261",
+      "study": "1001genomes flowering time phenotypes",
+      "unit": "day",
+      "value_rows": 1163,
+      "unique_accessions": 1162,
+      "nonfinite_or_missing": 0,
+      "duplicate_accessions": {
+        "8424": 2
+      },
+      "top_country_row_counts": [
+        [
+          "Sweden",
+          244
+        ],
+        [
+          "Spain",
+          202
+        ],
+        [
+          "GER",
+          129
+        ],
+        [
+          "Italy",
+          86
+        ],
+        [
+          "UK",
+          66
+        ]
+      ],
+      "genotype_intersection_n": null,
+      "selection_status": "interface_candidate_not_frozen"
+    },
+    {
+      "phenotype_id": 262,
+      "name": "FT16",
+      "doi": "10.21958/phenotype:262",
+      "study": "1001genomes flowering time phenotypes",
+      "unit": "day",
+      "value_rows": 1123,
+      "unique_accessions": 1122,
+      "nonfinite_or_missing": 0,
+      "duplicate_accessions": {
+        "8424": 2
+      },
+      "top_country_row_counts": [
+        [
+          "Sweden",
+          221
+        ],
+        [
+          "Spain",
+          192
+        ],
+        [
+          "GER",
+          129
+        ],
+        [
+          "Italy",
+          86
+        ],
+        [
+          "UK",
+          64
+        ]
+      ],
+      "genotype_intersection_n": null,
+      "selection_status": "interface_candidate_not_frozen"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# --- 虚拟环境 ---
+.venv/
+venv/
+
+# --- 日志 / 系统 ---
+*.log
+.DS_Store
+
+# --- 基因组大文件（挡；如个别小 marker 列表需入库，用 git add -f 单独处理）---
+*.vcf.gz
+*.bcf
+*.bam
+*.bai
+
+# --- 模型存档 ----
+*.pt
+*.pth
+*.onnx
+
+# Reproducible environments and generated research outputs
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+data/raw/
+data/interim/
+data/processed/
+runs/*/
+reference/BiMSGP/

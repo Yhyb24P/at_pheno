@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "at-pheno"
+version = "0.1.0"
+description = "Auditable Arabidopsis marker-density prediction experiments"
+requires-python = ">=3.11"
+dependencies = ["numpy>=2.0,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+data = ["h5py>=3.12,<4"]
+
+[project.scripts]
+at-pheno = "at_pheno.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

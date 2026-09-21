@@ -1,0 +1,12 @@
+# Pilot only. Formal trait/split manifests must be frozen after data audit.
+seed = 20260922
+outer_folds = 5
+inner_folds = 3
+densities = [10000, 50000, 250000, 1000000, "all"]
+alphas = [0.01, 0.1, 1.0, 10.0, 100.0]
+min_call_rate = 0.95
+min_maf = 0.05
+min_mac = 0
+block_size = 4096
+hash_salt = "canonical-v1"
+
