@@ -62,4 +62,4 @@ reference/BiMSGP/     独立上游checkout（忽略；固定SHA见reference/READ
 runs/                 每次运行的原始预测与完整记录（忽略）
 ```
 
-已核验HDF5为1135×10,709,949，且全文件只含0/1；全库 AraPheno feasibility registry 已生成并计入非有限值过滤，但尚未解决候选性状的来源级重复/汇总语义。运行时有15项测试，含物理排序、group嵌套隔离、二态全位点翻转不变性、扫描 minority-state 边界及 formal provenance binding。下一步补齐REF/ALT与原始缺失语义、处理重复记录、标定近亲块并注册确认性统计，再冻结性状与划分。HDF5 尚无完整 density prediction runner；PC-only、LD/RKHS/多核、标准GBLUP外部一致性及结构化SSM也尚未实现；不以合成自检或理论复杂度宣称真实全密度预测成功。
+已核验HDF5为1135×10,709,949，且全文件只含0/1；全库 AraPheno feasibility registry 已生成并计入非有限值过滤，候选性状的来源级重复/汇总语义（390/261/262 组）仍按 registry TSV 状态保持未决。运行时有 106 项本地测试（CI 侧 105 passed + 1 skipped，被跳过的检查依赖 61 MB 的 catalog 工件，该工件不入 Git），含物理排序、样本列序、group 嵌套隔离、二态全位点翻转不变性、minority-state 边界扫描、formal v2 provenance binding（6 项运行重算 + record-only 交叉绑定）与 int8 ALT-dosage 存储契约（GT round-trip fixture，-1 不进入任何 dosage 统计）。**剩余 P0-1（formal VCF→int8 ALT-dosage conversion 尚未实施）**：int8、值域 `{-1,0,1,2}`、shape `sample×variant`，禁止先经 float32 全量矩阵生成；raw-file 审计由 build 阶段 `at_pheno.formal_provenance.verify_source_vcf` 承担，执行 gate 不重读 19 GB 源 VCF。HDF5 尚无完整 density prediction runner；PC-only、LD/RKHS/多核、标准GBLUP外部一致性及结构化SSM也尚未实现；不以合成自检或理论复杂度宣称真实全密度预测成功。
