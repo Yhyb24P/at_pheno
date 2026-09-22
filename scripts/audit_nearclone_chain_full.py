@@ -9,6 +9,21 @@ import h5py
 import numpy as np
 
 
+def maximal_clique_sizes(adjacency):
+    """Return clique sizes for this tiny diagnostic graph (never canonical blocks)."""
+    found = []
+    def visit(current, candidates, excluded):
+        if not candidates and not excluded:
+            found.append(len(current))
+            return
+        for node in list(candidates):
+            visit(current | {node}, candidates & adjacency[node], excluded & adjacency[node])
+            candidates.remove(node)
+            excluded.add(node)
+    visit(set(), set(adjacency), set())
+    return sorted(found, reverse=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--hdf5", type=Path, required=True)
@@ -43,11 +58,24 @@ def main():
     hamming = ones[:, None] + ones[None, :] - 2 * gram
     lower = hamming[np.tril_indices(len(members), -1)]
     edge_count = int(np.count_nonzero(lower <= .001 * n_sites))
+    adjacency = {index: set() for index in range(len(members))}
+    edges = []
+    for right in range(len(members)):
+        for left in range(right):
+            value = int(hamming[left, right])
+            if value <= .001 * n_sites:
+                adjacency[left].add(right)
+                adjacency[right].add(left)
+                edges.append({"accession_a": members[left], "accession_b": members[right],
+                              "hamming_count": value, "hamming_distance": value / n_sites})
     result = {"status": "FULL_HDF5_CHAIN_CONFIRMATION", "block_id": args.block_id,
               "members": members, "n_sites": n_sites, "cutoff": .001,
               "edge_count": edge_count, "edge_density": edge_count / len(lower),
               "max_hamming_count": int(lower.max()), "max_hamming_distance": float(lower.max() / n_sites),
-              "min_hamming_distance": float(lower.min() / n_sites)}
+              "min_hamming_distance": float(lower.min() / n_sites),
+              "threshold_edges": edges,
+              "noncanonical_topology": {"maximal_clique_sizes": maximal_clique_sizes(adjacency),
+                                          "note": "diagnostic only; does not replace connected-component blocks"}}
     args.out.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result))
 

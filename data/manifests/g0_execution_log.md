@@ -83,3 +83,15 @@
 - Current evidence: the selected-panel primary component has 13 members, 15/78 internal edges (density 0.1923), and a maximum internal Hamming distance 0.001292 versus the 0.001 edge cutoff; this meets the specified low-density chain condition, but the prose `>>` merits a direct full-HDF5 confirmation before treating it as a durable design blocker.
 - Current hypothesis: recomputing only the affected component's pairwise binary Hamming distances across all 10,709,949 HDF5 states can confirm or falsify the chain pattern without modifying the frozen 250K primary definition.
 - Minimal verification: load only the 13 affected columns in bounded HDF5 chunks; record full-panel maximum distance and edge density at the same 0.001 numerical cutoff, with no phenotype access.
+
+### TASK07 chain-topology characterization
+
+- Current evidence: full-HDF5 confirmation establishes a sparse 13-member component but summary metrics alone do not show whether clique-based blocking, pairwise edge constraints, or simple component blocking would yield materially different sample units.
+- Current hypothesis: recording the exact full-HDF5 threshold-edge topology and maximum clique sizes will make the methodological choice explicit; it is diagnostic only and cannot silently replace the frozen connected-components rule.
+- Minimal verification: re-use the same full-HDF5 bounded computation, emit only accession IDs and pair distances below the existing cutoff, and label all alternative topology summaries non-canonical.
+
+### TASK07 sampling-correction investigation
+
+- Current evidence: the 250K rule yields 16 primary edges and 2,686 edges at the already registered 0.002 sensitivity cutoff, while full-HDF5 examination of the apparent 13-member component removes several 250K-only edges. At a true distance of 0.001, a 250K binary sample has standard error about 0.000063; using 0.002 as a candidate screen is therefore more than fifteen standard errors above the primary boundary.
+- Current hypothesis: retain the frozen 250K coordinate panel and 0.001 primary *edge definition*, but use its registered 0.002 sensitivity graph only to nominate candidate pairs, then compute exact all-HDF5 Hamming distance for every candidate before the 0.001 connected-component operation. This removes threshold sampling noise without changing the biological threshold or using phenotype information.
+- Minimal verification: materialize the 0.002 candidate pairs, exact-check all of them in bounded HDF5 chunks, record the conservative screen's model-based false-negative bound, and verify that the full exact primary graph is a subset of candidates before considering any replacement of the provisional blocker.

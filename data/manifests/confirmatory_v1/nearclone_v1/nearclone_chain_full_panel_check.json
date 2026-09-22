@@ -22,5 +22,63 @@
   "edge_density": 0.08974358974358974,
   "max_hamming_count": 13560,
   "max_hamming_distance": 0.0012661124716840388,
-  "min_hamming_distance": 0.0008710592366032742
+  "min_hamming_distance": 0.0008710592366032742,
+  "threshold_edges": [
+    {
+      "accession_a": "470",
+      "accession_b": "476",
+      "hamming_count": 9329,
+      "hamming_distance": 0.0008710592366032742
+    },
+    {
+      "accession_a": "476",
+      "accession_b": "742",
+      "hamming_count": 10507,
+      "hamming_distance": 0.0009810504233026694
+    },
+    {
+      "accession_a": "1942",
+      "accession_b": "1943",
+      "hamming_count": 10435,
+      "hamming_distance": 0.0009743277022140815
+    },
+    {
+      "accession_a": "484",
+      "accession_b": "2091",
+      "hamming_count": 10547,
+      "hamming_distance": 0.0009847852683518847
+    },
+    {
+      "accession_a": "476",
+      "accession_b": "2141",
+      "hamming_count": 10614,
+      "hamming_distance": 0.0009910411338093206
+    },
+    {
+      "accession_a": "2141",
+      "accession_b": "2159",
+      "hamming_count": 10474,
+      "hamming_distance": 0.0009779691761370665
+    },
+    {
+      "accession_a": "1739",
+      "accession_b": "2370",
+      "hamming_count": 10661,
+      "hamming_distance": 0.0009954295767421488
+    }
+  ],
+  "noncanonical_topology": {
+    "maximal_clique_sizes": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "note": "diagnostic only; does not replace connected-component blocks"
+  }
 }

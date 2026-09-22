@@ -1,0 +1,23 @@
+{
+  "schema": "nearclone_exact_refinement_v1",
+  "status": "EXACT_PRIMARY_EDGE_REFINEMENT_COMPLETE",
+  "primary_cutoff": 0.001,
+  "primary_max_hamming_count": 10709,
+  "candidate_screen": {
+    "panel_size": 250000,
+    "screen_cutoff": 0.002,
+    "candidate_pairs": 2686,
+    "hash_sampling_model": "Bernoulli approximation",
+    "single_pair_false_negative_upper_bound": 1.009865071760745e-42,
+    "familywise_union_bound": 6.498936176062686e-37
+  },
+  "exact_primary": {
+    "n_edges": 11,
+    "n_components": 1125,
+    "multi_member_components": 4,
+    "largest_component": 8,
+    "chain_flag": false,
+    "status": "PASS"
+  },
+  "noncanonical_note": "Exact refinement corrects screening noise; canonical adoption requires design-manifest update."
+}
