@@ -113,3 +113,9 @@
 - Current evidence: three 10.7M SHA256 rank artifacts require roughly 32M independent short hashes; a serial Python loop would underuse the available CPU although each chromosome-bin stratum is independent before deterministic interleaving.
 - Current hypothesis: worker processes can rank independent contiguous compact-index strata and return them in fixed stratum order; the parent retains the prescribed round-robin interleave, so concurrency cannot affect rank identity.
 - Minimal verification: retain a serial fixture oracle, compare parallel and serial rank arrays byte-for-byte on a small compact array, then use bounded worker count for the formal artifacts.
+
+## TASK10
+
+- Current evidence: formal build, QA, trait/split/near-clone/rank/analysis artifacts exist and no real phenotype prediction has been run; `runs/smoke_iid` and `runs/smoke_group` contain explicitly synthetic pilot outputs.
+- Current hypothesis: a manifest generated from final on-disk artifact hashes, canonical split set, code hashes and the pre-freeze Git HEAD will provide an auditable handoff without falsely binding a self-referential commit hash.
+- Minimal verification: recompute required artifact SHA256 values, reject any run whose audit trait is not `synthetic`, ensure all expected canonical files exist, run the complete test suite and a clean-tree/remote/CI verification after the freeze commit.
