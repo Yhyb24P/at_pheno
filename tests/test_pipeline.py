@@ -2,10 +2,18 @@ import json
 import sys
 from argparse import Namespace
 
+import numpy as np
 import pytest
 
 from at_pheno.cli import demo, load_dataset, main, read_table, run, sha256, write_json, write_table
 from at_pheno.core import random_folds
+
+
+def _convert_demo_to_formal_int8(data):
+    """Convert a synthetic pilot fixture into the formal storage contract."""
+    values = np.load(data/"genotypes.npy")
+    formal = np.where(np.isnan(values), -1, values).astype(np.int8)
+    np.save(data/"genotypes.npy", formal)
 
 
 def test_outer_test_labels_cannot_change_own_predictions_or_tuning(tmp_path):
@@ -100,6 +108,7 @@ def _v2_record(data, source, registry, manifest, genotypes_sha256="0"*64):
 def test_formal_mode_binds_actual_genotype_hash_and_resolved_trait(tmp_path):
     data = tmp_path/"data"
     demo(data)
+    _convert_demo_to_formal_int8(data)
     source = tmp_path/"source.vcf"
     source.write_text("##fileformat=VCFv4.2\n#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tS1\n1\t100\t.\tA\tG\t.\tPASS\tGT\t0/0\n")
     registry = tmp_path/"trait_resolution_v1.tsv"
@@ -140,6 +149,7 @@ def test_formal_cli_fixture_argparse_run_gate_v2(tmp_path, monkeypatch):
     via the real parser, not a hand-built Namespace."""
     data = tmp_path/"data"
     demo(data)
+    _convert_demo_to_formal_int8(data)
     config = tmp_path/"cli.toml"
     config.write_text('seed=7\nouter_folds=3\ninner_folds=2\ndensities=[16]\nalphas=[0.1]\nmin_call_rate=0.9\nmin_maf=0.05\nmin_mac=0\nblock_size=32\nhash_salt="cli"\n')
     source = tmp_path/"source.vcf"

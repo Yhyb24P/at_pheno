@@ -1,0 +1,21 @@
+{
+  "stage": "G0_FORMAL_DATA_AND_DESIGN_FREEZE",
+  "recorded_at_utc": "2026-09-22T12:35:48.697231+00:00",
+  "git_commit": "d8c219b0913d8930d48477551508bd214df96db8",
+  "python": "3.13.14",
+  "numpy": "2.5.3",
+  "h5py": "3.16.0",
+  "disk": {
+    "total_bytes": 2163350618112,
+    "used_bytes": 1691332157440,
+    "free_bytes": 362050523136
+  },
+  "memory": {
+    "mem_total_bytes": 100688568320,
+    "mem_available_bytes": 89705807872
+  },
+  "checks": {
+    "worktree_clean_before_stage": true,
+    "tests_passed_before_stage": 106
+  }
+}

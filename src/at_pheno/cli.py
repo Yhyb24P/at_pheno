@@ -44,7 +44,7 @@ def sha256(path):
     return h.hexdigest()
 
 
-def load_dataset(directory, trait):
+def load_dataset(directory, trait, *, formal=False):
     samples = read_table(directory/"samples.tsv", ["accession_id", "genetic_group"])
     variants = read_table(directory/"variants.tsv", ["chromosome", "position", "ref", "alt"])
     phenotypes = read_table(directory/"phenotypes.tsv", ["accession_id", "trait_id", "value"])
@@ -68,6 +68,10 @@ def load_dataset(directory, trait):
     x = np.load(directory/"genotypes.npy", mmap_mode="r", allow_pickle=False)
     if x.ndim != 2 or x.shape != (len(ids), len(marker_ids)) or x.dtype.kind not in "fiu":
         raise ValueError("Genotype shape/type does not match manifests")
+    if formal and x.dtype != np.int8:
+        raise ValueError(
+            "Formal genotype storage requires dtype int8; "
+            f"got dtype {x.dtype}. Pilot storage may use float hard calls with NaN.")
     # Validate the entire matrix in bounded memory, including future test calls.
     # The formal int8 ALT-dosage contract maps to the storage directly
     # (-1 missing, 0/1/2 ALT dosage): the block check is dtype-aware.
@@ -127,7 +131,8 @@ def run(args):
                                           registry=getattr(args, "registry", None),
                                           source_manifest=getattr(args, "source_manifest", None))
                                   if mode == "formal" else (None, None))
-    x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
+    x, rows, ids, variants, y, groups, audit = load_dataset(
+        args.data, args.trait, formal=(mode == "formal"))
     if len(y) < 12:
         raise ValueError("Pilot requires at least 12 matched accessions")
     if args.protocol == "group":

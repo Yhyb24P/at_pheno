@@ -115,7 +115,29 @@ def test_load_dataset_accepts_int8_contract(tmp_path):
     assert len(y) == 6
 
 
+def test_formal_load_dataset_accepts_only_int8_contract(tmp_path):
+    data = _make_int8_dataset(tmp_path)
+    assert load_dataset(data, "t1", formal=True)[0].dtype == np.int8
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.int16, np.uint8])
+def test_formal_load_dataset_rejects_non_int8_even_when_values_are_valid(tmp_path, dtype):
+    data = _make_int8_dataset(tmp_path)
+    x = np.load(data/"genotypes.npy")
+    if np.issubdtype(dtype, np.unsignedinteger):
+        x = np.where(x == -1, 0, x)
+    np.save(data/"genotypes.npy", x.astype(dtype))
+    with pytest.raises(ValueError, match=rf"dtype int8; got dtype {np.dtype(dtype)}"):
+        load_dataset(data, "t1", formal=True)
+
+
 def test_load_dataset_rejects_out_of_contract_int8_values(tmp_path):
     data = _make_int8_dataset(tmp_path, out_of_range=True)
     with pytest.raises(ValueError, match="int8 ALT-dosage"):
         load_dataset(data, "t1")
+
+
+def test_formal_load_dataset_rejects_out_of_contract_int8_values(tmp_path):
+    data = _make_int8_dataset(tmp_path, out_of_range=True)
+    with pytest.raises(ValueError, match="int8 ALT-dosage"):
+        load_dataset(data, "t1", formal=True)
