@@ -1,0 +1,43 @@
+{
+  "schema": "confirmatory_analysis_plan_v1",
+  "status": "CONFIRMATORY_ANALYSIS_PLAN_FROZEN",
+  "prediction_status": "NO_REAL_PREDICTIONS_RUN_IN_G0",
+  "training_only_common_qc": {
+    "call_rate_gte": 0.95,
+    "maf_gte": 0.05,
+    "non_monomorphic": true,
+    "test_data_excluded_from": ["QC", "MAF", "call_rate", "imputation", "eligibility"]
+  },
+  "density_ladder": ["COMMON_10K", "COMMON_50K", "COMMON_250K", "COMMON_1M", "COMMON_ALL"],
+  "density_unavailable_policy": "If the training-fold COMMON universe is smaller than a requested fixed K, mark that density unavailable; never silently cap K.",
+  "marker_rank": {
+    "canonical_salt": "at_pheno_common_v1",
+    "alternate_salts": ["at_pheno_common_v1_s2", "at_pheno_common_v1_s3"],
+    "manifest": "data/manifests/confirmatory_v1/marker_rank_manifest.json",
+    "selection": "filter static physical-bin rank to fold-eligible COMMON markers then take its prefix"
+  },
+  "primary": {
+    "trait_id": "703",
+    "trait_name": "DTF1",
+    "protocol": "near-clone-blocked canonical split",
+    "model_class": "additive genomic kernel baseline",
+    "contrast": "Q2_COMMON_ALL_minus_COMMON_250K",
+    "endpoint": "delta_Q2_trainmean",
+    "SESOI": 0.01
+  },
+  "q2_definition": "1 - sum((y-prediction)^2) / sum((y-train_fold_mean)^2)",
+  "confirmatory_decision": {
+    "meaningful_benefit": "point delta_Q2 >= 0.01 AND conditional 95% block-bootstrap CI lower bound > 0",
+    "practical_equivalence": "conditional 90% block-bootstrap CI lies entirely in [-0.01, 0.01]",
+    "otherwise": "INCONCLUSIVE"
+  },
+  "bootstrap": {
+    "unit": "frozen near-clone block",
+    "stratify": "within outer fold",
+    "replicates": 10000,
+    "seed": 20260922,
+    "conditioning": "conditional on fitted OOF predictions; excludes retraining/tuning variance"
+  },
+  "secondary_metrics": ["PCC", "RMSE", "MAE", "Q2"],
+  "multiplicity": "Primary family contains only DTF1/blocked/250K-to-COMMON_ALL/delta_Q2; no adjustment. Trait 748 is preregistered replication."
+}

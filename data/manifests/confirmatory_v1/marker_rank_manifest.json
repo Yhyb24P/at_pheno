@@ -1,0 +1,33 @@
+{
+  "schema": "marker_rank_v1",
+  "algorithm": "physical_bin_sha256_round_robin_v1",
+  "bin_bp": 1000000,
+  "source_variants_compact_sha256": "0b7eccd3b7413c4ee7ea7de6d00b82ee8a5593a282e3f3a34959056709284d34",
+  "n_variants": 10707430,
+  "ranks": [
+    {
+      "salt": "at_pheno_common_v1",
+      "path": "data/processed/formal_genotype_v1/marker_ranks/marker_rank_at_pheno_common_v1.npy",
+      "sha256": "387b4c050476f570e10811e7bf1349b75b9ca4ffd01f336ebb955139af3ec7db",
+      "dtype": "int32",
+      "n": 10707430,
+      "n_strata": 121
+    },
+    {
+      "salt": "at_pheno_common_v1_s2",
+      "path": "data/processed/formal_genotype_v1/marker_ranks/marker_rank_at_pheno_common_v1_s2.npy",
+      "sha256": "b5576898131881e4d0de4a1d934743abcec5a117d5714243d99a8720136419dd",
+      "dtype": "int32",
+      "n": 10707430,
+      "n_strata": 121
+    },
+    {
+      "salt": "at_pheno_common_v1_s3",
+      "path": "data/processed/formal_genotype_v1/marker_ranks/marker_rank_at_pheno_common_v1_s3.npy",
+      "sha256": "5b3b9b0cb33e30a0462e4e18ee9d6f501c29c23af150fe198525be84108938f1",
+      "dtype": "int32",
+      "n": 10707430,
+      "n_strata": 121
+    }
+  ]
+}

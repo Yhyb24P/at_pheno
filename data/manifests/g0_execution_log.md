@@ -101,3 +101,15 @@
 - Current evidence: exact-refined full-HDF5 blocks pass the chain rule; the selected trait snapshots have unique published accession IDs, but the prior cohort-membership artifact does not include 703/704/705/748.
 - Current hypothesis: the split generator can read only accession IDs from each registry-bound raw snapshot, intersect them with exact blocks and published group labels, and validate the pre-frozen finite-panel count without inspecting any `phenotype_value` field.
 - Minimal verification: fixture-test deterministic block assignment, outer/inner block non-crossing, group-only balancing, and failure on a trait ID count that disagrees with the frozen panel before emitting canonical, alternate-salt, IID, or LOGO manifests.
+
+## TASK09
+
+- Current evidence: the final variants compact index is physically ordered and SHA256-bound; 10.7M Python marker strings plus one global hash sort would be needlessly memory-heavy and would not guarantee early physical spread.
+- Current hypothesis: sorting SHA256 ranks inside each contiguous chromosome × 1-Mb stratum, then emitting fixed-size rounds across strata, creates an exact prefix-nested rank with physical balance and only bounded per-stratum hash arrays.
+- Minimal verification: fixture-test salt determinism, prefix nesting, and first-round multi-stratum coverage; bind each generated int32 rank artifact to the final compact-index SHA256 and freeze all QC/density/endpoint/bootstrap rules without executing predictions.
+
+### TASK09 rank-throughput correction
+
+- Current evidence: three 10.7M SHA256 rank artifacts require roughly 32M independent short hashes; a serial Python loop would underuse the available CPU although each chromosome-bin stratum is independent before deterministic interleaving.
+- Current hypothesis: worker processes can rank independent contiguous compact-index strata and return them in fixed stratum order; the parent retains the prescribed round-robin interleave, so concurrency cannot affect rank identity.
+- Minimal verification: retain a serial fixture oracle, compare parallel and serial rank arrays byte-for-byte on a small compact array, then use bounded worker count for the formal artifacts.
