@@ -48,3 +48,5 @@ def test_g0_1_primary_feasibility_and_baseline_are_frozen():
     primary = [row for row in rows if row["trait_id"] == "703" and row["protocol"] == "blocked"]
     assert len(rows) == 237 and len(primary) == 25
     assert all(row["COMMON_250K_feasible"] == "True" for row in primary)
+    amendment = json.loads((root / "data/manifests/confirmatory_v1_1/analysis_plan_v1_1.json").read_text())
+    assert amendment["density_availability"]["COMMON_1M"].startswith("PREDECLARED_UNAVAILABLE")

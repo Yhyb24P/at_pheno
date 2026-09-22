@@ -14,85 +14,90 @@
     "refinement_scope": "Full-HDF5 exact distances refine only d<=0.002 250K-screen nominated candidate pairs, not an exhaustive all-pairs calculation."
   },
   "artifact_bindings": {
-    "freeze_manifest.json": {
+    "original_g0_freeze_manifest": {
       "path": "data/manifests/confirmatory_v1/freeze_manifest.json",
       "sha256": "4ee7630336b70eb9879bfd9f8ebdd0d60c8d8aeeae15b24f239e56b3ccdb4bc8",
       "bytes": 14647
     },
-    "1001g_hdf5_2026-09-22.json": {
+    "hdf5_source_manifest": {
       "path": "data/manifests/1001g_hdf5_2026-09-22.json",
       "sha256": "ef52a70c48eabbc46c26ae51372c880ec7de5430ea2a69c6ccbd84c3ab360af1",
       "bytes": 16971
     },
-    "formal_genotype_v1_build.json": {
+    "tracked_build_manifest": {
       "path": "data/manifests/formal_genotype_v1_build.json",
       "sha256": "7d475ef6bd64e46c4f319b66bfbd60e68753cd855906d52b7add6e909ce3e3db",
       "bytes": 1056
     },
-    "formal_vcf_preflight_v1.json": {
+    "formal_vcf_preflight": {
       "path": "data/manifests/formal_vcf_preflight_v1.json",
       "sha256": "60c95ed2c3140a20e6472746a1f1bdf80c8f07ed3d1b0b506840ef6dad3c42b5",
       "bytes": 15502
     },
-    "formal_genotype_v1_qc.json": {
+    "formal_genotype_qa": {
       "path": "data/manifests/formal_genotype_v1_qc.json",
       "sha256": "66028f870924f6c734e8b532e551f0469d3daab0da35b9ebecbb9e432e26cf54",
       "bytes": 5670
     },
-    "trait_panel.tsv": {
+    "trait_panel": {
       "path": "data/manifests/confirmatory_v1/trait_panel.tsv",
       "sha256": "c256a6331da57c8684d6019e6902afba50b4f7843f0fa7a6d669c4aca9e87e88",
       "bytes": 3156
     },
-    "split_summary.json": {
+    "split_summary": {
       "path": "data/manifests/confirmatory_v1/split_summary.json",
       "sha256": "c8f147fd18559b8ced3e6140f0ad82ca7eb32584269802a505fc532b22411d93",
       "bytes": 2290
     },
-    "nearclone_marker_panel.tsv": {
+    "nearclone_coordinate_panel": {
       "path": "data/manifests/confirmatory_v1/nearclone_v1/nearclone_marker_panel.tsv",
       "sha256": "1a8d362c4a8bcd08fa1924d850748a7122b0197485911470e0969335f3fcce59",
       "bytes": 21127943
     },
-    "nearclone_sensitivity.json": {
+    "nearclone_sensitivity": {
       "path": "data/manifests/confirmatory_v1/nearclone_v1/nearclone_sensitivity.json",
       "sha256": "ce80d61b9690d9b33b6cbce0b3231d07e946b7cc531c62db6063b13fbb7e64e1",
       "bytes": 1024
     },
-    "nearclone_screen_d002_exact_pairs.tsv": {
+    "nearclone_screened_exact_pairs": {
       "path": "data/manifests/confirmatory_v1/nearclone_exact_refinement/nearclone_screen_d002_exact_pairs.tsv",
       "sha256": "535fd2ab7c9811abeda3819709affc049e0b3e661266b34ec0891fa3feacc358",
       "bytes": 126529
     },
-    "nearclone_exact_refinement_summary.json": {
+    "nearclone_exact_summary": {
       "path": "data/manifests/confirmatory_v1/nearclone_exact_refinement/nearclone_exact_refinement_summary.json",
       "sha256": "c28269c6972f8c0cbbf51e5f28d31c3f345f1299f8004976575f9c6fceee6903",
       "bytes": 754
     },
-    "nearclone_blocks_exact_d001.tsv": {
+    "nearclone_exact_blocks": {
       "path": "data/manifests/confirmatory_v1/nearclone_exact_refinement/nearclone_blocks_exact_d001.tsv",
       "sha256": "15cbd38bb20a756a577a9163495d068060d2bcd9761ac5152619d4b8256f5c95",
       "bytes": 11364
     },
-    "baseline_spec_v1.json": {
+    "original_analysis_plan_v1": {
+      "path": "data/manifests/confirmatory_v1/analysis_plan_v1.json",
+      "sha256": "8c0568b8e0eef7e79813deb0e7438d26b02b4b6b0273eb22d1fb69d0ecaeabed",
+      "bytes": 2005
+    },
+    "amended_analysis_plan_v1_1": {
+      "path": "data/manifests/confirmatory_v1_1/analysis_plan_v1_1.json",
+      "sha256": "70dd18bee1ee479e537cda8660a5255950b34bccd16556e80973eec9929f37d8",
+      "bytes": 1884
+    },
+    "baseline_spec_v1": {
       "path": "data/manifests/confirmatory_v1_1/baseline_spec_v1.json",
       "sha256": "36f5ed6670ecd52602ee603732ad4fc534f45ee24b9cbef65c7b35aa9e59f0ee",
       "bytes": 2854
     },
-    "common_feasibility.tsv": {
+    "common_feasibility": {
       "path": "data/manifests/confirmatory_v1_1/common_feasibility.tsv",
       "sha256": "62d814b5731e8d8f224188e5ed8f2f75866390ea7f423338284dfa0301a0d60d",
       "bytes": 19614
     },
-    "common_feasibility_summary.json": {
+    "common_feasibility_summary": {
       "path": "data/manifests/confirmatory_v1_1/common_feasibility_summary.json",
       "sha256": "e25c43623cfa379d94efab50ce630b472ee9837163fcaad3b4577073bc3e2c29",
       "bytes": 405
-    },
-    "analysis_plan_v1.json": {
-      "path": "data/manifests/confirmatory_v1/analysis_plan_v1.json",
-      "sha256": "3dc39befa5500474b545aec62350c4bd6faf296bbcb6ddadfa8ee12e41bcab55",
-      "bytes": 2147
     }
   },
   "nearclone_provenance_binding": {

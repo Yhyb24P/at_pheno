@@ -1,0 +1,31 @@
+{
+  "schema": "confirmatory_analysis_plan_v1_1_amendment",
+  "status": "CONFIRMATORY_ANALYSIS_PLAN_AMENDED_BEFORE_REAL_PREDICTION",
+  "inherits": {
+    "path": "data/manifests/confirmatory_v1/analysis_plan_v1.json",
+    "sha256": "8c0568b8e0eef7e79813deb0e7438d26b02b4b6b0273eb22d1fb69d0ecaeabed"
+  },
+  "prediction_status": "NO_REAL_PREDICTIONS_RUN_IN_G0_OR_G0_1",
+  "primary": {
+    "trait_id": "703",
+    "trait_name": "DTF1",
+    "protocol": "near-clone-safe / published-group-balanced canonical split",
+    "model_class": "additive genomic kernel baseline specified by baseline_spec_v1.json",
+    "contrast": "Q2_COMMON_ALL_minus_COMMON_250K",
+    "endpoint": "delta_Q2_trainmean",
+    "SESOI": 0.01
+  },
+  "confirmatory_decision": {
+    "practically_meaningful_benefit": "conditional 95% block-bootstrap CI lower bound > 0.01",
+    "positive_effect_point_exceeds_SESOI": "conditional 95% block-bootstrap CI lower bound > 0 AND point delta_Q2 >= 0.01; this is not a practical-importance claim",
+    "practical_equivalence": "conditional 90% block-bootstrap CI lies entirely in [-0.01, 0.01]",
+    "otherwise": "INCONCLUSIVE"
+  },
+  "density_availability": {
+    "evidence": "data/manifests/confirmatory_v1_1/common_feasibility.tsv",
+    "COMMON_1M": "PREDECLARED_UNAVAILABLE_IN_ALL_237_FROZEN_PARTITIONS; emit UNAVAILABLE and do not fit or cap",
+    "primary_scope": "Tests whether high-quality training-fold COMMON SNP density beyond 250K, up to the fold-specific COMMON_ALL universe, improves prediction.",
+    "not_identified": "This contrast is not a test of 10.7M full-genome density or rare-variant contribution; those require a later MAC5/release-variable branch."
+  },
+  "nearclone_scope": "No resolved phenotype cohort contains a multi-accession d<=0.001 exact block. The primary split prevents such leakage by construction but is not a relatedness-shift evaluation."
+}
