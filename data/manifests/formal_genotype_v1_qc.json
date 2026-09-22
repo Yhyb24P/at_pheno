@@ -1,0 +1,259 @@
+{
+  "schema": "formal_genotype_v1_qc",
+  "status": "FORMAL_GENOTYPE_QC_PASS",
+  "matrix": {
+    "shape": [
+      1135,
+      10707430
+    ],
+    "dtype": "int8",
+    "file_bytes": 12152933178,
+    "sha256": "12266959aecaa451df3aa755d21660f0eb33e236801ed918eb3a449b3781cbcc",
+    "value_counts": {
+      "-1": 2065038499,
+      "0": 9601888700,
+      "1": 0,
+      "2": 486005851
+    },
+    "other_values": 0
+  },
+  "samples": {
+    "n": 1135,
+    "unique": 1135,
+    "ordered_equality_vcf_header": true,
+    "ordered_equality_hdf5_accessions": true,
+    "genetic_group_mapping_complete": true
+  },
+  "variants": {
+    "n": 10707430,
+    "chromosome_counts": {
+      "1": 2597567,
+      "2": 1868168,
+      "3": 2193866,
+      "4": 1766544,
+      "5": 2281285
+    },
+    "strict_order": true,
+    "duplicate_chromosome_position": 0,
+    "duplicate_quadruples": 0,
+    "ref_alt_domain": "ACGT singleton unequal",
+    "source_record_index_strictly_increasing": true
+  },
+  "missingness": {
+    "per_sample_rate_quantiles": {
+      "0": 0.0417761311537876,
+      "0.01": 0.09138987226626744,
+      "0.05": 0.09772783011422909,
+      "0.5": 0.15259572091528967,
+      "0.95": 0.319032204740073,
+      "0.99": 0.4275587493917775,
+      "1": 0.5489833694920256
+    },
+    "top20_per_sample": [
+      {
+        "accession_id": "9970",
+        "rate": 0.5489833694920256
+      },
+      {
+        "accession_id": "9973",
+        "rate": 0.5001256137093588
+      },
+      {
+        "accession_id": "10012",
+        "rate": 0.47584481056612093
+      },
+      {
+        "accession_id": "9974",
+        "rate": 0.4652745803614873
+      },
+      {
+        "accession_id": "10013",
+        "rate": 0.45795228173333846
+      },
+      {
+        "accession_id": "9969",
+        "rate": 0.4411321857812752
+      },
+      {
+        "accession_id": "9945",
+        "rate": 0.44003350944157466
+      },
+      {
+        "accession_id": "9976",
+        "rate": 0.43764535467427756
+      },
+      {
+        "accession_id": "9996",
+        "rate": 0.4372629099606535
+      },
+      {
+        "accession_id": "9941",
+        "rate": 0.4335812608627841
+      },
+      {
+        "accession_id": "9978",
+        "rate": 0.4293388796377842
+      },
+      {
+        "accession_id": "9957",
+        "rate": 0.4277030062302532
+      },
+      {
+        "accession_id": "9985",
+        "rate": 0.427278721411207
+      },
+      {
+        "accession_id": "8231",
+        "rate": 0.42495491448461487
+      },
+      {
+        "accession_id": "9949",
+        "rate": 0.41759834059153317
+      },
+      {
+        "accession_id": "10005",
+        "rate": 0.4132640605635526
+      },
+      {
+        "accession_id": "10008",
+        "rate": 0.4103091031181152
+      },
+      {
+        "accession_id": "9962",
+        "rate": 0.4039123300362459
+      },
+      {
+        "accession_id": "9986",
+        "rate": 0.4017015287515305
+      },
+      {
+        "accession_id": "9990",
+        "rate": 0.3997823007014755
+      }
+    ],
+    "per_variant_call_rate_quantiles": {
+      "0": 0.0008810572687224516,
+      "0.01": 0.10572687224669608,
+      "0.05": 0.3312775330396476,
+      "0.5": 0.9242290748898678,
+      "0.95": 0.9876651982378855,
+      "0.99": 0.9920704845814978,
+      "1": 1.0
+    }
+  },
+  "heterozygosity": {
+    "per_sample_rate_quantiles": {
+      "0": 0.0,
+      "0.01": 0.0,
+      "0.05": 0.0,
+      "0.5": 0.0,
+      "0.95": 0.0,
+      "0.99": 0.0,
+      "1": 0.0
+    },
+    "top20_per_sample": [
+      {
+        "accession_id": "88",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "108",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "139",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "159",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "265",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "350",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "351",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "403",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "410",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "424",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "428",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "430",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "470",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "476",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "484",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "504",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "506",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "531",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "544",
+        "rate": 0.0
+      },
+      {
+        "accession_id": "546",
+        "rate": 0.0
+      }
+    ],
+    "per_variant_carrier_count_quantiles": {
+      "0": 0.0,
+      "0.01": 0.0,
+      "0.05": 0.0,
+      "0.5": 0.0,
+      "0.95": 0.0,
+      "0.99": 0.0,
+      "1": 0.0
+    }
+  },
+  "hdf5_cross_check": {
+    "sites": 2000,
+    "comparable_pairs": 1887816,
+    "matches": 1887746,
+    "concordance_hdf5_0_is_ref": 0.9999629201150959
+  },
+  "artifacts_sha256": {
+    "samples.tsv": "2bb2bb5b90d9132cbff3b8489c651a9057f592cd7e81565ca8fbec8503b122ce",
+    "variants.tsv": "4f6e02c743dd1f8b183a28a463955a25856de2a0ba1625a1d5e2afdd90b4acc3",
+    "variants_compact.npy": "0b7eccd3b7413c4ee7ea7de6d00b82ee8a5593a282e3f3a34959056709284d34",
+    "genotype_build_manifest.json": "7d475ef6bd64e46c4f319b66bfbd60e68753cd855906d52b7add6e909ce3e3db",
+    "BUILD_COMPLETE.json": "f147f057bccb1063647eb8649d0b91268ea2c4fdb25efbf8108508a6829f6400"
+  }
+}

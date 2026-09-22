@@ -59,3 +59,9 @@
 - Current evidence: the full VCF preflight now passes with 10,707,430 accepted records, and the existing source-derived biallelic catalog supplies the required ordered `(chromosome, position, REF, ALT, source_record_index)` rows with a recorded SHA256.
 - Current hypothesis: a five-chromosome HTSlib query can write non-overlapping column ranges of one preallocated `int8` `.npy` memmap, while each worker stream-checks its query keys against the catalog; this avoids a Python list/float matrix and retains the original VCF record index without a second semantic VCF parser.
 - Minimal verification: test fixed-width GT-byte conversion, catalog/query key mismatch rejection, FILTER/structural query expression, atomic partial-to-final finalization, and a real VCF interval against independent direct extraction before any full build.
+
+## TASK05
+
+- Current evidence: `BUILD_COMPLETE.json` exists only after the formal builder's value-domain/shape/hash checks; however its preliminary QC is intentionally insufficient because it was produced in the build process rather than by an independent reread of final artifacts.
+- Current hypothesis: a post-build QA reader can stream final matrix blocks and `variants.tsv`, compare the compact runtime index, verify VCF/HDF5 sample order, and recompute the deterministic 2,000-site HDF5 orientation check without reading phenotypes.
+- Minimal verification: fixture-test matrix-domain and variant-order failures, then run the QA only against the final `BUILD_COMPLETE` artifact and emit its own SHA256-bound report.
