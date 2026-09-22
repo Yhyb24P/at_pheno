@@ -22,6 +22,14 @@
     "duplicate_chrom_position_ref_alt_quadruples": 0,
     "note": "provenance recorded, not re-verified against the VCF-side delivery notes (3.3/3.4 cross-check residues); the biallelic-SNP policy set only"
   },
+  "source_vcf_provenance": {
+    "path": "data/raw/1001g_v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz",
+    "sha256": "7f825afb784b2424e35501fd8b88c32a4798013eb9fe762724addfb249007e7a",
+    "official_md5": "a29dec1389cf31c2d18ecd76947d4e54",
+    "md5_matches_official": true,
+    "recorded_in": "data/manifests/1001g_v31_population_vcf_source.json",
+    "note": "recorded from the VCF-side source audit; the mapping step reused that audit's catalog stream artifact and did not re-hash the source VCF"
+  },
   "position_mapping": {
     "n_regions": 5,
     "chroms": [

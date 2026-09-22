@@ -11,6 +11,7 @@ field;  intact, the gate passes.
 
 import hashlib
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -253,3 +254,21 @@ def test_missing_bound_files_rejected(tmp_path):
     # and no recompute target at all
     with pytest.raises(ValueError, match="source_vcf_sha256"):
         gate_v2(data, TRAIT, source_vcf=None, registry=registry)
+
+
+def test_mapping_summary_binds_source_vcf_provenance():
+    """The committed HDF5-VCF mapping summary cross-binds the source VCF
+    hashes to the VCF-side source audit, field by field."""
+    repo = Path(__file__).resolve().parents[1]
+    summary = json.loads(
+        (repo/"data/manifests/hdf5_vcf_position_mapping_summary.json").read_text(
+            encoding="utf-8"))
+    source = json.loads(
+        (repo/"data/manifests/1001g_v31_population_vcf_source.json").read_text(
+            encoding="utf-8"))
+    prov = summary["source_vcf_provenance"]
+    assert prov["path"] == source["vcf_path"]
+    assert prov["sha256"] == source["local_sha256"]
+    assert prov["official_md5"] == source["official_md5"]
+    assert prov["md5_matches_official"] is source["md5_matches_official"]
+    assert prov["recorded_in"] == "data/manifests/1001g_v31_population_vcf_source.json"
