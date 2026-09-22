@@ -40,7 +40,12 @@ def blocks(columns, size):
 
 
 def fit_qc(x, train, min_call_rate=0.95, min_maf=0.05, min_mac=0, block_size=4096):
-    """Diploid ALT dosage 0/1/2; NaN means missing (never zero)."""
+    """Diploid ALT dosage 0/1/2; NaN means missing (never zero).
+
+    For int8 input the formal storage convention is `-1` = missing,
+    `0/1/2` = ALT dosage: missing entries are excluded from call
+    counts, dosage sums and means (never treated as a dosage value).
+    """
     if not 0 <= min_call_rate <= 1 or not 0 <= min_maf <= 0.5 or min_mac < 0:
         raise ValueError("Invalid QC thresholds")
     train = np.asarray(train, dtype=int)
@@ -48,11 +53,25 @@ def fit_qc(x, train, min_call_rate=0.95, min_maf=0.05, min_mac=0, block_size=409
         raise ValueError("At least two unique training samples are required")
     kept, means, freqs, rates, macs = [], [], [], [], []
     for _, cols in blocks(np.arange(x.shape[1]), block_size):
-        g = np.asarray(x[np.ix_(train, cols)], dtype=float)
-        if np.any(~(np.isnan(g) | (g == 0) | (g == 1) | (g == 2))):
-            raise ValueError("Expected diploid hard calls 0/1/2 or NaN")
-        n = np.sum(~np.isnan(g), axis=0)
-        total = np.nansum(g, axis=0)
+        g = np.asarray(x[np.ix_(train, cols)])
+        if g.dtype == np.int8:
+            # Formal storage convention: -1 = missing (excluded from
+            # every dosage statistic, never a dosage value),
+            # 0/1/2 = ALT dosage.  int64 accumulation avoids int8
+            # overflow in the per-column dose sums.
+            g = g.astype(np.int64)
+            if np.any((g < -1) | (g > 2)):
+                raise ValueError(
+                    "Expected int8 ALT-dosage values -1/0/1/2 "
+                    "(-1 missing, 0/1/2 ALT dosage)")
+            n = np.sum(g != -1, axis=0)
+            total = np.sum(np.where(g == -1, 0, g), axis=0)
+        else:
+            g = g.astype(float)
+            if np.any(~(np.isnan(g) | (g == 0) | (g == 1) | (g == 2))):
+                raise ValueError("Expected diploid hard calls 0/1/2 or NaN")
+            n = np.sum(~np.isnan(g), axis=0)
+            total = np.nansum(g, axis=0)
         mean = np.divide(total, n, out=np.zeros(len(cols)), where=n > 0)
         p = mean / 2
         mac = np.minimum(total, 2 * n - total)
@@ -123,12 +142,23 @@ def additive_kernel(x, train, test, qc, block_size=4096):
     denominator = float(np.sum(2 * qc.frequencies * (1 - qc.frequencies)))
     if denominator <= 0:
         raise ValueError("Degenerate kernel")
+    int8 = x.dtype == np.int8
     for start, cols in blocks(qc.columns, block_size):
         mean = qc.means[start:start + len(cols)]
-        a = np.asarray(x[np.ix_(train, cols)], dtype=float) - mean
-        b = np.asarray(x[np.ix_(test, cols)], dtype=float) - mean
-        a = np.nan_to_num(a, nan=0.0)
-        b = np.nan_to_num(b, nan=0.0)
+        a_raw = np.asarray(x[np.ix_(train, cols)], dtype=float)
+        b_raw = np.asarray(x[np.ix_(test, cols)], dtype=float)
+        a = a_raw - mean
+        b = b_raw - mean
+        if int8:
+            # Formal int8 convention: -1 missing entries contribute a
+            # zero deviation to the kernel product, never (-1 - mean)
+            # (that would count a missing call as a negative dosage,
+            # which the frozen contract forbids).
+            a = np.where(a_raw == -1.0, 0.0, a)
+            b = np.where(b_raw == -1.0, 0.0, b)
+        else:
+            a = np.nan_to_num(a, nan=0.0)
+            b = np.nan_to_num(b, nan=0.0)
         k += a @ a.T
         cross += b @ a.T
     return k / denominator, cross / denominator
