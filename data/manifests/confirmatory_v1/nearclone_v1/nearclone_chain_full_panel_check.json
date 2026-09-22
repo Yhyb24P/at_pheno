@@ -1,0 +1,26 @@
+{
+  "status": "FULL_HDF5_CHAIN_CONFIRMATION",
+  "block_id": 0,
+  "members": [
+    "470",
+    "476",
+    "484",
+    "504",
+    "742",
+    "1739",
+    "1942",
+    "1943",
+    "2091",
+    "2141",
+    "2159",
+    "2370",
+    "8723"
+  ],
+  "n_sites": 10709949,
+  "cutoff": 0.001,
+  "edge_count": 7,
+  "edge_density": 0.08974358974358974,
+  "max_hamming_count": 13560,
+  "max_hamming_distance": 0.0012661124716840388,
+  "min_hamming_distance": 0.0008710592366032742
+}

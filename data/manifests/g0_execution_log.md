@@ -71,3 +71,15 @@
 - Current evidence: selected local `raw_values/*.json` bytes do not equal `trait_resolution_v1.tsv.values_sha256`; inspection of the acquisition code proves that field is the remote HTTP response digest, whereas the local files were intentionally parsed and re-serialized with `json.dumps(...)+"\\n"`. Remote re-fetch currently fails with a connection reset, so byte identity cannot be re-established by a new download.
 - Current hypothesis: these are distinct hash domains, not evidence of a changed phenotype table. The freeze record must retain the registry's remote-response hash, add a separately recomputed local-file SHA256, and require semantic invariants (finite unique accession count, no selected duplicates, trait name/status) before it can use the local snapshot.
 - Minimal verification: do not overwrite the registry hash; emit both hashes and their explicit non-equality, validate every selected raw snapshot against its registry counts/status, and make the remote re-fetch failure an auditable limitation rather than a silent pass.
+
+## TASK07
+
+- Current evidence: the official IBS kinship matrix has an uncalibrated native scale around 6–7 and cannot define a Hamming cutoff. The official binary HDF5 has complete 0/1 states, unique positions, and the exact 1,135 final sample order.
+- Current hypothesis: a hash-selected 250K physical-coordinate panel plus blockwise binary Gram accumulation yields exact all-pair Hamming distances without REF/ALT orientation or phenotype values; connected components and their internal edge diagnostics can then enforce the frozen chain blocker rule.
+- Minimal verification: validate deterministic panel selection and hand-calculated binary Hamming distances on fixtures; require every chromosome to appear and compare final HDF5 sample order to the formal genotype sample manifest before scanning the full panel.
+
+### TASK07 chain-evidence check
+
+- Current evidence: the selected-panel primary component has 13 members, 15/78 internal edges (density 0.1923), and a maximum internal Hamming distance 0.001292 versus the 0.001 edge cutoff; this meets the specified low-density chain condition, but the prose `>>` merits a direct full-HDF5 confirmation before treating it as a durable design blocker.
+- Current hypothesis: recomputing only the affected component's pairwise binary Hamming distances across all 10,709,949 HDF5 states can confirm or falsify the chain pattern without modifying the frozen 250K primary definition.
+- Minimal verification: load only the 13 affected columns in bounded HDF5 chunks; record full-panel maximum distance and edge density at the same 0.001 numerical cutoff, with no phenotype access.

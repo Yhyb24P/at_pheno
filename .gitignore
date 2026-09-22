@@ -26,6 +26,9 @@ venv/
 # --- 大型审计产物（逻辑哈希已随同 JSON manifest 入库；本体 60 MB 级，不进 Git）---
 data/manifests/*.tsv.gz
 data/manifests/1001g_v31_concordance_spot_check.json
+# Reconstructible 250K near-clone sampling design payload; its SHA256 is
+# bound by the later confirmatory freeze manifest, not tracked as source code.
+data/manifests/confirmatory_v1/nearclone_v1/nearclone_marker_panel.tsv
 
 # --- 工作笔记 / 交付包等临时文件 ---
 tmp/

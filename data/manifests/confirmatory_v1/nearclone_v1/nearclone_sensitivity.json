@@ -1,0 +1,43 @@
+{
+  "schema": "nearclone_hamming_v1",
+  "salt": "at_pheno_nearclone_v1",
+  "panel_size": 250000,
+  "panel_per_chromosome": {
+    "1": 60705,
+    "2": 43785,
+    "3": 50934,
+    "4": 41479,
+    "5": 53097
+  },
+  "sample_n": 1135,
+  "cutoffs": {
+    "0.0005": {
+      "max_hamming_count": 125,
+      "n_edges": 0,
+      "n_components": 1135,
+      "multi_member_components": 0,
+      "largest_component": 1,
+      "chain_flag": false,
+      "status": "PASS"
+    },
+    "0.001": {
+      "max_hamming_count": 250,
+      "n_edges": 16,
+      "n_components": 1122,
+      "multi_member_components": 2,
+      "largest_component": 13,
+      "chain_flag": true,
+      "status": "NEARCLONE_CHAIN_BLOCKER"
+    },
+    "0.002": {
+      "max_hamming_count": 500,
+      "n_edges": 2686,
+      "n_components": 1049,
+      "multi_member_components": 7,
+      "largest_component": 78,
+      "chain_flag": false,
+      "status": "PASS"
+    }
+  },
+  "sampling_design_exception": "genotype-only coordinate hash panel; no phenotype values used"
+}
