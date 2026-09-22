@@ -69,10 +69,20 @@ def load_dataset(directory, trait):
     if x.ndim != 2 or x.shape != (len(ids), len(marker_ids)) or x.dtype.kind not in "fiu":
         raise ValueError("Genotype shape/type does not match manifests")
     # Validate the entire matrix in bounded memory, including future test calls.
-    for start in range(0, x.shape[1], 4096):
-        g = x[:, start:start+4096]
-        if np.any(~(np.isnan(g) | (g == 0) | (g == 1) | (g == 2))):
-            raise ValueError("Genotypes must be diploid hard calls 0/1/2 or NaN")
+    # The formal int8 ALT-dosage contract maps to the storage directly
+    # (-1 missing, 0/1/2 ALT dosage): the block check is dtype-aware.
+    if x.dtype == np.int8:
+        for start in range(0, x.shape[1], 4096):
+            g = x[:, start:start+4096]
+            if np.any((g < -1) | (g > 2)):
+                raise ValueError(
+                    "Genotypes must satisfy the int8 ALT-dosage contract: "
+                    "values -1/0/1/2, -1 missing, 0/1/2 ALT dosage")
+    else:
+        for start in range(0, x.shape[1], 4096):
+            g = x[:, start:start+4096]
+            if np.any(~(np.isnan(g) | (g == 0) | (g == 1) | (g == 2))):
+                raise ValueError("Genotypes must be diploid hard calls 0/1/2 or NaN")
     values, missing = {}, 0
     all_trait_ids = set()
     for row in phenotypes:
@@ -109,10 +119,13 @@ def save_qc(path, qc):
 def run(args):
     config = tomllib.loads(args.config.read_text())
     mode = getattr(args, "mode", "pilot")
+    # The formal gate never re-reads the raw source VCF: source identity
+    # is cross-bound to the SHA256-bound source-manifest record
+    # (bind_source_manifest), while the raw-file check is a dataset-
+    # build stage duty (at_pheno.formal_provenance.verify_source_vcf).
     formal_path, formal_record = (gate_v2(args.data, args.trait,
-                                          getattr(args, "source_vcf", None),
-                                          getattr(args, "registry", None),
-                                          getattr(args, "source_manifest", None))
+                                          registry=getattr(args, "registry", None),
+                                          source_manifest=getattr(args, "source_manifest", None))
                                   if mode == "formal" else (None, None))
     x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
     if len(y) < 12:
@@ -214,7 +227,12 @@ def run(args):
     inputs = [args.data/name for name in ("genotypes.npy", "samples.tsv", "variants.tsv", "phenotypes.tsv")]
     inputs += [args.config] + ([args.splits] if args.splits else []) + ([formal_path] if formal_path else [])
     if mode == "formal":
-        inputs += [getattr(args, "source_vcf", None), getattr(args, "registry", None)]
+        # Experiment-run inputs: the re-verified registry TSV and the
+        # SHA256-bound source manifest.  The raw source VCF is
+        # deliberately NOT part of the run: by the contract, it is
+        # audited through the immutable manifest
+        # (verify_source_vcf was run at the dataset-build stage).
+        inputs += [getattr(args, "registry", None), getattr(args, "source_manifest", None)]
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except subprocess.CalledProcessError:
@@ -267,9 +285,18 @@ def main():
     r.add_argument("--mode", choices=["pilot", "formal"], default="pilot")
     r.add_argument("--splits", type=Path, help="Frozen TSV accession_id/fold manifest")
     r.add_argument("--source-vcf", type=Path, default=None,
-                   help="Formal v2 gate: source-variant file bound via source_vcf_sha256 recompute")
+                   help="Dataset-build reference only: the experiment-run "
+                        "gate does not digest the raw source VCF; it binds "
+                        "the SHA256-bound source-manifest JSON instead")
     r.add_argument("--registry", type=Path, default=None,
-                   help="Formal v2 gate: trait-resolution registry TSV bound via registry_sha256 recompute")
+                   help="Formal v2 gate: trait-resolution registry TSV recomputed via registry_sha256")
+    r.add_argument("--source-manifest", type=Path, default=None,
+                   help="Formal v2 gate: SHA256-bound source-manifest JSON "
+                        "(the VCF-side source audit).  The gate re-binds it "
+                        "and cross-binds the record's VCF identity fields "
+                        "against it; raw-file identity is verified at the "
+                        "dataset-build stage by at_pheno.formal_provenance."
+                        "verify_source_vcf")
     args = parser.parse_args()
     if args.command == "demo":
         demo(args.out)

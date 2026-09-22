@@ -34,18 +34,23 @@ PROVENANCE_SCHEMA_V2 = "at_pheno_formal_v2"
 # The only registry target_status the formal gate accepts as truth.
 RESOLVABLE_TARGET_STATUS = "PUBLISHED_ACCESSION_VALUE_USABLE"
 
-# The spec-recorded bindings, in gate order: seven SHA256 bindings that
-# are recomputed against files on disk (the six dataset inputs plus the
-# source-manifest JSON that cross-binds the official source MD5), the
-# filter/multiallelic policy states, the reference assembly, the allele
-# encoding, and the conversion script + commit pair.
+# The spec-recorded bindings, in gate order: six SHA256 bindings
+# recomputed against files on disk (the four dataset files plus the
+# SHA256-bound registry TSV and source-manifest JSON), plus the
+# record-only `source_vcf_sha256` that the gate does NOT recompute:
+# its identity is carried by the SHA256-bound source-manifest record
+# whose `local_sha256`/`official_md5` cross-bind it, and the raw-file
+# check happens at the dataset-build stage (`verify_source_vcf`, P0-1
+# gate).  The remaining record fields are the filter/multiallelic
+# policy states, the reference assembly, the allele encoding, and
+# the conversion script + commit pair.
 SHA256_BINDINGS = (
     ("genotypes_sha256", "genotypes.npy"),
     ("samples_sha256", "samples.tsv"),
     ("variants_sha256", "variants.tsv"),
     ("phenotypes_sha256", "phenotypes.tsv"),
     ("registry_sha256", "the trait-resolution registry TSV"),
-    ("source_vcf_sha256", "the source VCF"),
+    ("source_vcf_sha256", "the source VCF (record-only; not re-verified by the gate)"),
     ("source_manifest_sha256", "the source-manifest JSON"),
 )
 
@@ -76,17 +81,20 @@ def _ok_md5(value):
             and all(c in "0123456789abcdef" for c in value))
 
 
-def bind_dataset_input(dataset_dir, record, source_vcf=None, registry=None,
-                       source_manifest=None):
+def bind_dataset_input(dataset_dir, record, registry=None, source_manifest=None):
     """Re-verify the record's SHA256 bindings against the files on disk.
 
     Every binding requires the target file to exist, the recorded value
     to be a 64-character lowercase hex SHA256, and a re-computed digest
     equal to it.  All mismatches raise a ValueError naming the binding
     field (never a generic "invalid hash").  Called after the gate's
-    required-field check; `source_vcf`, `registry` and `source_manifest`
-    are the recompute targets for `source_vcf_sha256` /
-    `registry_sha256` / `source_manifest_sha256` and are required.
+    required-field check; `registry` and `source_manifest` are the
+    recompute targets for `registry_sha256` / `source_manifest_sha256`
+    and are required.  `source_vcf_sha256` is record-only in the
+    experiment-run gate: the gate checks its format and cross-binds it
+    to the SHA256-bound source-manifest record (`bind_source_manifest`),
+    and never re-reads the raw source VCF; the raw-file check is the
+    dataset-build's job (`verify_source_vcf`).
     """
     targets = {
         "genotypes_sha256": (dataset_dir / "genotypes.npy", "genotypes.npy"),
@@ -94,7 +102,6 @@ def bind_dataset_input(dataset_dir, record, source_vcf=None, registry=None,
         "variants_sha256": (dataset_dir / "variants.tsv", "variants.tsv"),
         "phenotypes_sha256": (dataset_dir / "phenotypes.tsv", "phenotypes.tsv"),
         "registry_sha256": (registry, "the trait-resolution registry TSV"),
-        "source_vcf_sha256": (source_vcf, "the source VCF"),
         "source_manifest_sha256": (source_manifest, "the source-manifest JSON"),
     }
     for field, (path, name) in targets.items():
@@ -206,8 +213,80 @@ def bind_source_manifest(record, source_manifest):
             "is carried by the SHA256-bound manifest record only")
 
 
-def gate_v2(dataset_dir, trait, source_vcf=None, registry=None,
-            source_manifest=None):
+def verify_source_vcf(source_manifest, vcf_path):
+    """The dataset-build (P0-1 gate) raw-file identity checker.
+
+    The complement of `bind_source_manifest`: the experiment-run gate
+    only cross-binds the record to a *SHA256-bound* source-manifest
+    record without re-reading the raw VCF, so this is where the raw
+    bytes are actually opened and the manifest's claims are proven
+    against the file on disk:
+
+    * the SHA256 of the on-disk file (digested byte-for-byte as stored:
+      a .vcf.gz artifact is digested as the compressed artifact, not
+      as an unpacked stream it was never unpacked into) equals
+      `manifest["local_sha256"]`;
+    * its MD5 equals `manifest["official_md5"]`;
+    * `manifest["md5_matches_official"]` must be true, so file ==
+      official public release digest is cross-bound through the
+      manifest + record.
+
+    The raw-file hashing happens here, and only here: a formal run
+    must not re-hash the 19 GB source VCF.  Every failure raises a
+    ValueError naming the offending field (never a generic
+    "invalid hash").
+    """
+    manifest_path = Path(source_manifest)
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} "
+            f"is not valid JSON") from exc
+    target = Path(vcf_path)
+    if not target.is_file():
+        raise ValueError(f"Formal provenance v2: source VCF {target} does not exist")
+    raw_sha256 = hashlib.sha256()
+    raw_md5 = hashlib.md5()
+    with target.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024*1024), b""):
+            raw_sha256.update(chunk)
+            raw_md5.update(chunk)
+    recorded_sha256 = manifest.get("local_sha256")
+    recorded_md5 = manifest.get("official_md5")
+    if not _ok_sha256(recorded_sha256):
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} must record "
+            f"local_sha256 as a 64-character lowercase hex SHA256 "
+            f"(got {recorded_sha256!r})")
+    if not _ok_md5(recorded_md5):
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} must record "
+            f"official_md5 as a 32-character lowercase hex MD5 "
+            f"(got {recorded_md5!r})")
+    if raw_sha256.hexdigest() != recorded_sha256:
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} records "
+            f"local_sha256 {recorded_sha256!r} that does not equal the "
+            f"recomputed SHA256 {raw_sha256.hexdigest()!r} of {target}; "
+            "the on-disk file is not the audited source VCF")
+    if raw_md5.hexdigest() != recorded_md5:
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} records "
+            f"official_md5 {recorded_md5!r} that does not equal the "
+            f"recomputed MD5 {raw_md5.hexdigest()!r} of {target}; the file "
+            "is not byte-identical to the official release and the "
+            "md5_matches_official claim is not reproducible")
+    if manifest.get("md5_matches_official") is not True:
+        raise ValueError(
+            f"Formal provenance v2: source-manifest {manifest_path} must "
+            f"record md5_matches_official true so that the official "
+            f"release digest cross-binds file and record "
+            f"(got {manifest.get('md5_matches_official')!r})")
+    return {"sha256": raw_sha256.hexdigest(), "md5": raw_md5.hexdigest()}
+
+
+def gate_v2(dataset_dir, trait, registry=None, source_manifest=None):
     """The formal-mode gate for the v2 record.
 
     Loads `dataset_dir/"provenance.json"`, requires the record to be
@@ -226,6 +305,14 @@ def gate_v2(dataset_dir, trait, source_vcf=None, registry=None,
       `official_md5 == official_source_md5` and `md5_matches_official
       true`, so the official-source MD5 claim is carried by a verified
       record rather than re-hashed by the gate.
+
+    Two-layer provenance contract (the dataset-build concept, 2026-09):
+    the gate binds the small immutable `source-manifest JSON` and never
+    re-reads the 19 GB raw VCF.  Its recorded `local_sha256` /
+    `official_md5` cross-bind the record's VCF identity fields, so the
+    strength of source-identity evidence is unchanged, only the point
+    of verification shifts: `verify_source_vcf` performs the raw-file
+    check at the dataset-build stage.
 
     Returns the (provenance-path, record) tuple.
     """
@@ -278,7 +365,17 @@ def gate_v2(dataset_dir, trait, source_vcf=None, registry=None,
         raise ValueError(
             f"Formal provenance v2: phenotype_registry must record the "
             f"requested trait {trait!r} with resolved true (got {state})")
-    bind_dataset_input(directory, record, source_vcf=source_vcf, registry=registry,
+    # Record-only VCF identity: the experiment-run gate never re-reads
+    # the raw VCF.  The value must be a well-formed SHA256, and
+    # bind_source_manifest below cross-checks it against the
+    # SHA256-bound source manifest; the raw-file check is the
+    # dataset-build responsibility (verify_source_vcf).
+    if not _ok_sha256(record["source_vcf_sha256"]):
+        raise ValueError(
+            "Formal provenance v2: source_vcf_sha256 (record-only cross-bound "
+            "to the source manifest) must be a 64-character lowercase hex "
+            "SHA256")
+    bind_dataset_input(directory, record, registry=registry,
                        source_manifest=source_manifest)
     # Semantic closures, both against freshly re-verified on-disk files:
     registry_truth(registry, trait)
