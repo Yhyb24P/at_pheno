@@ -1,0 +1,44 @@
+{
+  "schema": "additive_baseline_spec_v1",
+  "status": "FROZEN_BEFORE_REAL_PREDICTION",
+  "model": "additive genomic kernel ridge regression",
+  "genotype_representation": "formal int8 ALT dosage; -1 is missing; 0/1/2 are diploid ALT dosages",
+  "training_only_qc": {
+    "call_rate_gte": 0.95,
+    "maf_gte": 0.05,
+    "non_monomorphic": true,
+    "min_mac": 0
+  },
+  "kernel": {
+    "formula": "K = ZZ^T / sum_j[2 p_j (1-p_j)]",
+    "centering": "Z_ij = dosage_ij - 2p_j, with p_j estimated on the exact fit partition",
+    "missing": "replace a missing dosage by its fit-partition mean before centering; equivalently its centered contribution is zero",
+    "normalization": "denominator is recomputed from exactly the selected fit-partition COMMON markers for every density and every inner/outer fit",
+    "density_comparability": "alpha is independently inner-tuned for every density; no alpha is shared across densities"
+  },
+  "density": {
+    "names": ["COMMON_10K", "COMMON_50K", "COMMON_250K", "COMMON_1M", "COMMON_ALL"],
+    "selection": "filter the frozen physical-bin rank to fit-partition COMMON eligibility, then take the prefix; COMMON_250K is nested in COMMON_ALL",
+    "unavailable": "If fewer than requested K fit-partition COMMON markers exist, emit unavailable rather than cap."
+  },
+  "hyperparameter_selection": {
+    "inner_folds": 4,
+    "objective": "sum of squared validation errors pooled over all inner held-out accessions",
+    "initial_alpha_log10": {"start": -6, "stop": 6, "step": 0.5},
+    "boundary_extension": "If the selected alpha is at either initial-grid boundary, extend that boundary by four 0.5-log10 steps, refit all inner candidates, and repeat until the optimum is interior or a hard cap is reached.",
+    "alpha_hard_log10_cap": [-12, 12],
+    "tie_break": "smallest alpha among exactly equal pooled inner SSE values",
+    "budget": "The same inner folds, alpha procedure and failure policy apply to every available density."
+  },
+  "numerics": {
+    "solver": "Cholesky solve of K + alpha I",
+    "jitter": "none after successful Cholesky; on failure add lambda*I, lambda = 1e-10*trace(K)/n and multiply by 10 until success or lambda exceeds 1e-4*trace(K)/n",
+    "failure_policy": "If the hard jitter cap fails, mark this fit/density unavailable; do not substitute a different solver or silently drop samples.",
+    "floating_point": "float64 kernels and solves"
+  },
+  "validation": {
+    "dense_primal_parity": "A fixed synthetic fixture must agree with the dense primal ridge solution for the exact kernel convention.",
+    "standard_implementation_parity": "Before interpreting G1 results, compare an intermediate marker subset with a documented standard GBLUP/rrBLUP-equivalent implementation under the same centering and normalization."
+  },
+  "primary_contrast": "Q2_COMMON_ALL_minus_COMMON_250K"
+}

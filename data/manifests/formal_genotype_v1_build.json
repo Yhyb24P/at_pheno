@@ -1,0 +1,28 @@
+{
+  "schema": "formal_genotype_v1",
+  "status": "BUILD_COMPLETE",
+  "n_samples": 1135,
+  "n_variants": 10707430,
+  "dtype": "int8",
+  "shape": [
+    1135,
+    10707430
+  ],
+  "value_counts": {
+    "-1": 2065038499,
+    "0": 9601888700,
+    "1": 0,
+    "2": 486005851
+  },
+  "source_identity": {
+    "sha256": "7f825afb784b2424e35501fd8b88c32a4798013eb9fe762724addfb249007e7a",
+    "md5": "a29dec1389cf31c2d18ecd76947d4e54"
+  },
+  "catalog_sha256": "31649a02b053928bb4eb54065e551414f68e1747d185933801ffff5f206d3b59",
+  "catalog_summary_sha256": "c84a99efed1cf7edcc12df2f12beb57d5a693527ab17dfbd8a91d7a343ed5729",
+  "query_filter": "(FILTER=\"PASS\" || FILTER=\".\") && N_ALT=1 && TYPE=\"snp\"",
+  "matrix_sha256": "12266959aecaa451df3aa755d21660f0eb33e236801ed918eb3a449b3781cbcc",
+  "samples_sha256": "2bb2bb5b90d9132cbff3b8489c651a9057f592cd7e81565ca8fbec8503b122ce",
+  "variants_sha256": "4f6e02c743dd1f8b183a28a463955a25856de2a0ba1625a1d5e2afdd90b4acc3",
+  "variants_compact_sha256": "0b7eccd3b7413c4ee7ea7de6d00b82ee8a5593a282e3f3a34959056709284d34"
+}

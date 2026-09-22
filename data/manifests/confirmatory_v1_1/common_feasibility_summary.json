@@ -1,0 +1,17 @@
+{
+  "schema": "common_feasibility_v1",
+  "status": "PASS",
+  "implementation": "CUDA blockwise genotype-only matrix multiplication",
+  "phenotype_values_read": false,
+  "n_partitions": 237,
+  "primary_trait_ids": [
+    "703"
+  ],
+  "primary_blocked_partition_n": 25,
+  "primary_all_250K_feasible": true,
+  "minimum_COMMON_by_protocol": {
+    "blocked": 347105,
+    "iid": 364896,
+    "logo": 357120
+  }
+}

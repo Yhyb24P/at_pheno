@@ -27,7 +27,8 @@
   },
   "q2_definition": "1 - sum((y-prediction)^2) / sum((y-train_fold_mean)^2)",
   "confirmatory_decision": {
-    "meaningful_benefit": "point delta_Q2 >= 0.01 AND conditional 95% block-bootstrap CI lower bound > 0",
+    "meaningful_benefit": "conditional 95% block-bootstrap CI lower bound > 0.01",
+    "positive_effect_point_exceeds_SESOI": "conditional 95% block-bootstrap CI lower bound > 0 AND point delta_Q2 >= 0.01; this is not a practical-importance claim",
     "practical_equivalence": "conditional 90% block-bootstrap CI lies entirely in [-0.01, 0.01]",
     "otherwise": "INCONCLUSIVE"
   },

@@ -1,0 +1,238 @@
+trait_id	trait_name	protocol	level	held_out	train_n	n_callrate95	n_MAF05_nonmonomorphic	n_COMMON	COMMON_10K_feasible	COMMON_50K_feasible	COMMON_250K_feasible	COMMON_1M_feasible
+703	DTF1	blocked	outer	0	748	3718367	1708290	403757	True	True	True	False
+703	DTF1	blocked	inner	outer0_inner0	561	3825465	1711002	421491	True	True	True	False
+703	DTF1	blocked	inner	outer0_inner1	561	3888229	1715838	432043	True	True	True	False
+703	DTF1	blocked	inner	outer0_inner2	561	3626762	1703692	386798	True	True	True	False
+703	DTF1	blocked	inner	outer0_inner3	561	3690959	1707558	403022	True	True	True	False
+703	DTF1	blocked	outer	1	749	3870347	1706388	421895	True	True	True	False
+703	DTF1	blocked	inner	outer1_inner0	561	3879668	1704453	423897	True	True	True	False
+703	DTF1	blocked	inner	outer1_inner1	562	3891062	1708958	427504	True	True	True	False
+703	DTF1	blocked	inner	outer1_inner2	562	3934680	1708337	430722	True	True	True	False
+703	DTF1	blocked	inner	outer1_inner3	562	3927220	1705135	431197	True	True	True	False
+703	DTF1	blocked	outer	2	749	3854264	1712097	421013	True	True	True	False
+703	DTF1	blocked	inner	outer2_inner0	561	3931658	1715285	435835	True	True	True	False
+703	DTF1	blocked	inner	outer2_inner1	562	3881232	1711790	425990	True	True	True	False
+703	DTF1	blocked	inner	outer2_inner2	562	3946071	1715165	434425	True	True	True	False
+703	DTF1	blocked	inner	outer2_inner3	562	3811919	1708808	415260	True	True	True	False
+703	DTF1	blocked	outer	3	749	3688090	1707732	390554	True	True	True	False
+703	DTF1	blocked	inner	outer3_inner0	561	3683089	1706951	391411	True	True	True	False
+703	DTF1	blocked	inner	outer3_inner1	561	3772406	1708419	406365	True	True	True	False
+703	DTF1	blocked	inner	outer3_inner2	562	3734556	1710546	399088	True	True	True	False
+703	DTF1	blocked	inner	outer3_inner3	563	3727171	1708550	393555	True	True	True	False
+703	DTF1	blocked	outer	4	749	3644420	1714376	399983	True	True	True	False
+703	DTF1	blocked	inner	outer4_inner0	561	3783703	1713582	419923	True	True	True	False
+703	DTF1	blocked	inner	outer4_inner1	562	3742551	1713905	414397	True	True	True	False
+703	DTF1	blocked	inner	outer4_inner2	562	3585916	1714101	394633	True	True	True	False
+703	DTF1	blocked	inner	outer4_inner3	562	3626245	1719870	398253	True	True	True	False
+703	DTF1	iid	outer	0	748	3665334	1706688	393736	True	True	True	False
+703	DTF1	iid	inner	outer0_inner0	560	3533474	1704121	377267	True	True	True	False
+703	DTF1	iid	inner	outer0_inner1	561	3792944	1713435	418397	True	True	True	False
+703	DTF1	iid	inner	outer0_inner2	561	3747046	1706376	402888	True	True	True	False
+703	DTF1	iid	inner	outer0_inner3	562	3750147	1705407	404574	True	True	True	False
+703	DTF1	iid	outer	1	749	3749040	1710722	405852	True	True	True	False
+703	DTF1	iid	inner	outer1_inner0	562	3804415	1711162	418965	True	True	True	False
+703	DTF1	iid	inner	outer1_inner1	562	3762804	1709176	406308	True	True	True	False
+703	DTF1	iid	inner	outer1_inner2	562	3818797	1716260	417892	True	True	True	False
+703	DTF1	iid	inner	outer1_inner3	561	3770154	1709218	407749	True	True	True	False
+703	DTF1	iid	outer	2	749	3734545	1709201	402864	True	True	True	False
+703	DTF1	iid	inner	outer2_inner0	561	3819445	1713248	420361	True	True	True	False
+703	DTF1	iid	inner	outer2_inner1	562	3724669	1710211	401091	True	True	True	False
+703	DTF1	iid	inner	outer2_inner2	562	3884126	1707461	421774	True	True	True	False
+703	DTF1	iid	inner	outer2_inner3	562	3667811	1708567	395775	True	True	True	False
+703	DTF1	iid	outer	3	749	3877493	1711525	422391	True	True	True	False
+703	DTF1	iid	inner	outer3_inner0	562	3986199	1712897	444079	True	True	True	False
+703	DTF1	iid	inner	outer3_inner1	561	3966735	1712528	431623	True	True	True	False
+703	DTF1	iid	inner	outer3_inner2	562	3858349	1712796	424527	True	True	True	False
+703	DTF1	iid	inner	outer3_inner3	562	3852218	1711575	415998	True	True	True	False
+703	DTF1	iid	outer	4	749	3748694	1710991	412052	True	True	True	False
+703	DTF1	iid	inner	outer4_inner0	561	3763499	1716574	419588	True	True	True	False
+703	DTF1	iid	inner	outer4_inner1	562	3885689	1714479	437285	True	True	True	False
+703	DTF1	iid	inner	outer4_inner2	562	3781163	1711566	414043	True	True	True	False
+703	DTF1	iid	inner	outer4_inner3	562	3717367	1705912	403696	True	True	True	False
+748	stomata density	blocked	outer	0	264	4568794	1744449	561590	True	True	True	False
+748	stomata density	blocked	inner	outer0_inner0	198	4495370	1744431	545111	True	True	True	False
+748	stomata density	blocked	inner	outer0_inner1	198	4355260	1746497	534697	True	True	True	False
+748	stomata density	blocked	inner	outer0_inner2	198	4537368	1752245	554804	True	True	True	False
+748	stomata density	blocked	inner	outer0_inner3	198	4235810	1746052	514893	True	True	True	False
+748	stomata density	blocked	outer	1	264	4660330	1746641	576200	True	True	True	False
+748	stomata density	blocked	inner	outer1_inner0	197	4398238	1749801	543743	True	True	True	False
+748	stomata density	blocked	inner	outer1_inner1	198	4430697	1749170	540168	True	True	True	False
+748	stomata density	blocked	inner	outer1_inner2	198	4584509	1749751	562180	True	True	True	False
+748	stomata density	blocked	inner	outer1_inner3	199	4562381	1754170	563710	True	True	True	False
+748	stomata density	blocked	outer	2	263	4543876	1745670	569813	True	True	True	False
+748	stomata density	blocked	inner	outer2_inner0	197	4399424	1744978	543484	True	True	True	False
+748	stomata density	blocked	inner	outer2_inner1	197	4406396	1754167	558620	True	True	True	False
+748	stomata density	blocked	inner	outer2_inner2	197	4273586	1745883	529663	True	True	True	False
+748	stomata density	blocked	inner	outer2_inner3	198	4435057	1748509	547168	True	True	True	False
+748	stomata density	blocked	outer	3	264	4572220	1742177	559386	True	True	True	False
+748	stomata density	blocked	inner	outer3_inner0	197	4428779	1744099	539588	True	True	True	False
+748	stomata density	blocked	inner	outer3_inner1	198	4373220	1747388	532001	True	True	True	False
+748	stomata density	blocked	inner	outer3_inner2	198	4386413	1739518	523992	True	True	True	False
+748	stomata density	blocked	inner	outer3_inner3	199	4423682	1752865	542157	True	True	True	False
+748	stomata density	blocked	outer	4	265	4687789	1746620	576710	True	True	True	False
+748	stomata density	blocked	inner	outer4_inner0	199	4450726	1749496	554447	True	True	True	False
+748	stomata density	blocked	inner	outer4_inner1	198	4584225	1756504	566919	True	True	True	False
+748	stomata density	blocked	inner	outer4_inner2	199	4630809	1756907	564321	True	True	True	False
+748	stomata density	blocked	inner	outer4_inner3	199	4414819	1750436	533729	True	True	True	False
+748	stomata density	iid	outer	0	264	4613127	1749240	574964	True	True	True	False
+748	stomata density	iid	inner	outer0_inner0	199	4285710	1750736	525773	True	True	True	False
+748	stomata density	iid	inner	outer0_inner1	197	4345820	1749697	535747	True	True	True	False
+748	stomata density	iid	inner	outer0_inner2	198	4683093	1756622	586913	True	True	True	False
+748	stomata density	iid	inner	outer0_inner3	198	4500734	1757671	559911	True	True	True	False
+748	stomata density	iid	outer	1	264	4532916	1742202	551415	True	True	True	False
+748	stomata density	iid	inner	outer1_inner0	198	4236147	1740907	507779	True	True	True	False
+748	stomata density	iid	inner	outer1_inner1	198	4546996	1747122	553027	True	True	True	False
+748	stomata density	iid	inner	outer1_inner2	198	4486838	1747513	549703	True	True	True	False
+748	stomata density	iid	inner	outer1_inner3	198	4203515	1746885	497909	True	True	True	False
+748	stomata density	iid	outer	2	264	4779802	1746863	596870	True	True	True	False
+748	stomata density	iid	inner	outer2_inner0	198	4665044	1756720	594509	True	True	True	False
+748	stomata density	iid	inner	outer2_inner1	198	4410712	1746810	540487	True	True	True	False
+748	stomata density	iid	inner	outer2_inner2	198	4646176	1743610	565435	True	True	True	False
+748	stomata density	iid	inner	outer2_inner3	198	4732398	1759722	592714	True	True	True	False
+748	stomata density	iid	outer	3	264	4647657	1743799	573380	True	True	True	False
+748	stomata density	iid	inner	outer3_inner0	198	4585252	1751787	561812	True	True	True	False
+748	stomata density	iid	inner	outer3_inner1	198	4526692	1746548	556289	True	True	True	False
+748	stomata density	iid	inner	outer3_inner2	198	4417399	1745081	536872	True	True	True	False
+748	stomata density	iid	inner	outer3_inner3	198	4388346	1747125	543058	True	True	True	False
+748	stomata density	iid	outer	4	264	4465771	1744539	548413	True	True	True	False
+748	stomata density	iid	inner	outer4_inner0	198	4131116	1744181	501917	True	True	True	False
+748	stomata density	iid	inner	outer4_inner1	197	4180010	1743253	503373	True	True	True	False
+748	stomata density	iid	inner	outer4_inner2	198	4331643	1746420	523624	True	True	True	False
+748	stomata density	iid	inner	outer4_inner3	199	4555574	1758699	568497	True	True	True	False
+704	RL	blocked	outer	0	680	3735213	1696894	397866	True	True	True	False
+704	RL	blocked	inner	outer0_inner0	510	3768128	1698185	399987	True	True	True	False
+704	RL	blocked	inner	outer0_inner1	510	3820892	1700017	404054	True	True	True	False
+704	RL	blocked	inner	outer0_inner2	510	3603154	1697171	383097	True	True	True	False
+704	RL	blocked	inner	outer0_inner3	510	3567814	1700678	381954	True	True	True	False
+704	RL	blocked	outer	1	680	3802086	1689319	398439	True	True	True	False
+704	RL	blocked	inner	outer1_inner0	510	3676726	1689831	374761	True	True	True	False
+704	RL	blocked	inner	outer1_inner1	510	3857175	1685380	404882	True	True	True	False
+704	RL	blocked	inner	outer1_inner2	510	3621768	1689267	373511	True	True	True	False
+704	RL	blocked	inner	outer1_inner3	510	3866896	1701059	417185	True	True	True	False
+704	RL	blocked	outer	2	680	3897589	1691206	415792	True	True	True	False
+704	RL	blocked	inner	outer2_inner0	510	3885546	1694255	412395	True	True	True	False
+704	RL	blocked	inner	outer2_inner1	510	3761428	1694234	397040	True	True	True	False
+704	RL	blocked	inner	outer2_inner2	510	3957253	1690212	422257	True	True	True	False
+704	RL	blocked	inner	outer2_inner3	510	3805132	1696694	408881	True	True	True	False
+704	RL	blocked	outer	3	680	3740604	1695443	396580	True	True	True	False
+704	RL	blocked	inner	outer3_inner0	510	3648908	1700661	388282	True	True	True	False
+704	RL	blocked	inner	outer3_inner1	510	3646647	1696572	380327	True	True	True	False
+704	RL	blocked	inner	outer3_inner2	510	3813344	1697630	409005	True	True	True	False
+704	RL	blocked	inner	outer3_inner3	510	3660439	1695069	384366	True	True	True	False
+704	RL	blocked	outer	4	680	3601640	1688600	376710	True	True	True	False
+704	RL	blocked	inner	outer4_inner0	510	3546985	1688184	368297	True	True	True	False
+704	RL	blocked	inner	outer4_inner1	510	3645912	1692872	378607	True	True	True	False
+704	RL	blocked	inner	outer4_inner2	510	3654922	1692600	390847	True	True	True	False
+704	RL	blocked	inner	outer4_inner3	510	3374566	1690683	347105	True	True	True	False
+704	RL	iid	outer	0	680	3813969	1693255	408611	True	True	True	False
+704	RL	iid	inner	outer0_inner0	510	3735092	1696261	396356	True	True	True	False
+704	RL	iid	inner	outer0_inner1	510	3677549	1693928	389694	True	True	True	False
+704	RL	iid	inner	outer0_inner2	510	3827374	1694908	414303	True	True	True	False
+704	RL	iid	inner	outer0_inner3	510	3829749	1697974	410674	True	True	True	False
+704	RL	iid	outer	1	680	3679543	1692197	387231	True	True	True	False
+704	RL	iid	inner	outer1_inner0	510	3670831	1696189	385757	True	True	True	False
+704	RL	iid	inner	outer1_inner1	510	3755749	1695478	397958	True	True	True	False
+704	RL	iid	inner	outer1_inner2	510	3633172	1694110	375890	True	True	True	False
+704	RL	iid	inner	outer1_inner3	510	3471921	1694757	364896	True	True	True	False
+704	RL	iid	outer	2	680	3763960	1691812	400398	True	True	True	False
+704	RL	iid	inner	outer2_inner0	510	3653313	1695934	392330	True	True	True	False
+704	RL	iid	inner	outer2_inner1	510	3853636	1696574	409002	True	True	True	False
+704	RL	iid	inner	outer2_inner2	510	3601025	1692107	381468	True	True	True	False
+704	RL	iid	inner	outer2_inner3	510	3764537	1691232	394944	True	True	True	False
+704	RL	iid	outer	3	680	3672782	1689308	380741	True	True	True	False
+704	RL	iid	inner	outer3_inner0	510	3583856	1691534	369676	True	True	True	False
+704	RL	iid	inner	outer3_inner1	510	3645933	1689550	371799	True	True	True	False
+704	RL	iid	inner	outer3_inner2	510	3730479	1695482	393075	True	True	True	False
+704	RL	iid	inner	outer3_inner3	510	3537783	1689586	365027	True	True	True	False
+704	RL	iid	outer	4	680	3848141	1694530	408751	True	True	True	False
+704	RL	iid	inner	outer4_inner0	510	3911173	1698254	419084	True	True	True	False
+704	RL	iid	inner	outer4_inner1	510	3653860	1694668	389032	True	True	True	False
+704	RL	iid	inner	outer4_inner2	510	4042185	1700400	439865	True	True	True	False
+704	RL	iid	inner	outer4_inner3	510	3611293	1693783	367443	True	True	True	False
+705	CL	blocked	outer	0	723	3601567	1701645	379493	True	True	True	False
+705	CL	blocked	inner	outer0_inner0	541	3718187	1701597	396653	True	True	True	False
+705	CL	blocked	inner	outer0_inner1	543	3535882	1702273	370178	True	True	True	False
+705	CL	blocked	inner	outer0_inner2	543	3578069	1700229	375745	True	True	True	False
+705	CL	blocked	inner	outer0_inner3	542	3628620	1708540	388468	True	True	True	False
+705	CL	blocked	outer	1	722	3868365	1707156	419050	True	True	True	False
+705	CL	blocked	inner	outer1_inner0	541	3916291	1708763	430354	True	True	True	False
+705	CL	blocked	inner	outer1_inner1	542	3920149	1713629	433129	True	True	True	False
+705	CL	blocked	inner	outer1_inner2	542	3742659	1708497	397105	True	True	True	False
+705	CL	blocked	inner	outer1_inner3	541	3942585	1705889	428121	True	True	True	False
+705	CL	blocked	outer	2	723	3746370	1705966	410137	True	True	True	False
+705	CL	blocked	inner	outer2_inner0	542	3691258	1709077	406396	True	True	True	False
+705	CL	blocked	inner	outer2_inner1	543	3722874	1705166	405762	True	True	True	False
+705	CL	blocked	inner	outer2_inner2	542	3842663	1707422	429882	True	True	True	False
+705	CL	blocked	inner	outer2_inner3	542	3776638	1708675	410224	True	True	True	False
+705	CL	blocked	outer	3	724	3743086	1699097	404283	True	True	True	False
+705	CL	blocked	inner	outer3_inner0	543	3904362	1707983	430804	True	True	True	False
+705	CL	blocked	inner	outer3_inner1	543	3724536	1701805	403815	True	True	True	False
+705	CL	blocked	inner	outer3_inner2	543	3801523	1699221	417010	True	True	True	False
+705	CL	blocked	inner	outer3_inner3	543	3596958	1695688	379380	True	True	True	False
+705	CL	blocked	outer	4	724	3762011	1695125	397518	True	True	True	False
+705	CL	blocked	inner	outer4_inner0	543	3809972	1699148	404556	True	True	True	False
+705	CL	blocked	inner	outer4_inner1	543	3800555	1698019	407566	True	True	True	False
+705	CL	blocked	inner	outer4_inner2	543	3731014	1698601	402139	True	True	True	False
+705	CL	blocked	inner	outer4_inner3	543	3754688	1692224	387534	True	True	True	False
+705	CL	iid	outer	0	723	3744831	1703932	409902	True	True	True	False
+705	CL	iid	inner	outer0_inner0	542	3732910	1704143	410245	True	True	True	False
+705	CL	iid	inner	outer0_inner1	542	3810453	1706709	420885	True	True	True	False
+705	CL	iid	inner	outer0_inner2	542	3685099	1703400	402861	True	True	True	False
+705	CL	iid	inner	outer0_inner3	543	3800677	1708854	418163	True	True	True	False
+705	CL	iid	outer	1	723	3773468	1699080	400027	True	True	True	False
+705	CL	iid	inner	outer1_inner0	542	3922742	1700784	423584	True	True	True	False
+705	CL	iid	inner	outer1_inner1	542	3648382	1700348	383818	True	True	True	False
+705	CL	iid	inner	outer1_inner2	542	3796056	1700756	407102	True	True	True	False
+705	CL	iid	inner	outer1_inner3	543	3782017	1699903	399018	True	True	True	False
+705	CL	iid	outer	2	723	3769440	1700219	401643	True	True	True	False
+705	CL	iid	inner	outer2_inner0	542	3691255	1703663	400600	True	True	True	False
+705	CL	iid	inner	outer2_inner1	542	3720006	1698504	396193	True	True	True	False
+705	CL	iid	inner	outer2_inner2	542	3819094	1702441	411621	True	True	True	False
+705	CL	iid	inner	outer2_inner3	543	3906609	1703482	411996	True	True	True	False
+705	CL	iid	outer	3	723	3705801	1703086	398122	True	True	True	False
+705	CL	iid	inner	outer3_inner0	542	3782995	1702492	410635	True	True	True	False
+705	CL	iid	inner	outer3_inner1	542	3662815	1708909	399461	True	True	True	False
+705	CL	iid	inner	outer3_inner2	542	3694105	1701768	391683	True	True	True	False
+705	CL	iid	inner	outer3_inner3	543	3734255	1705178	403673	True	True	True	False
+705	CL	iid	outer	4	724	3724176	1703256	399504	True	True	True	False
+705	CL	iid	inner	outer4_inner0	543	3816127	1705393	415602	True	True	True	False
+705	CL	iid	inner	outer4_inner1	543	3821845	1704232	410637	True	True	True	False
+705	CL	iid	inner	outer4_inner2	543	3684714	1707531	395203	True	True	True	False
+705	CL	iid	inner	outer4_inner3	543	3624364	1702493	388601	True	True	True	False
+703	DTF1	logo	outer	admixed	808	3744589	1715113	406781	True	True	True	False
+703	DTF1	logo	outer	asia	871	3828654	1702471	415234	True	True	True	False
+703	DTF1	logo	outer	central_europe	767	3836534	1733349	433760	True	True	True	False
+703	DTF1	logo	outer	germany	856	3679074	1719770	399465	True	True	True	False
+703	DTF1	logo	outer	italy_balkan_caucasus	844	3945831	1726762	442709	True	True	True	False
+703	DTF1	logo	outer	north_sweden	886	3750057	1695736	396542	True	True	True	False
+703	DTF1	logo	outer	relict	913	3760518	1697144	399595	True	True	True	False
+703	DTF1	logo	outer	south_sweden	800	3562408	1701394	377809	True	True	True	False
+703	DTF1	logo	outer	spain	834	3672592	1696221	388569	True	True	True	False
+703	DTF1	logo	outer	western_europe	845	3824513	1721726	422429	True	True	True	False
+704	RL	logo	outer	admixed	734	3674884	1697763	385473	True	True	True	False
+704	RL	logo	outer	asia	787	3815557	1682947	401765	True	True	True	False
+704	RL	logo	outer	central_europe	683	3782462	1716400	415475	True	True	True	False
+704	RL	logo	outer	germany	774	3642456	1703503	383967	True	True	True	False
+704	RL	logo	outer	italy_balkan_caucasus	766	3890534	1708175	423412	True	True	True	False
+704	RL	logo	outer	north_sweden	826	3723124	1684946	386153	True	True	True	False
+704	RL	logo	outer	relict	830	3724980	1679199	384133	True	True	True	False
+704	RL	logo	outer	south_sweden	733	3500494	1680313	357120	True	True	True	False
+704	RL	logo	outer	spain	757	3623209	1678540	370141	True	True	True	False
+704	RL	logo	outer	western_europe	760	3809602	1703999	409009	True	True	True	False
+705	CL	logo	outer	admixed	781	3737137	1707183	401672	True	True	True	False
+705	CL	logo	outer	asia	839	3763883	1693083	400689	True	True	True	False
+705	CL	logo	outer	central_europe	736	3729540	1726888	414519	True	True	True	False
+705	CL	logo	outer	germany	827	3675415	1712751	396022	True	True	True	False
+705	CL	logo	outer	italy_balkan_caucasus	812	3885240	1719087	430057	True	True	True	False
+705	CL	logo	outer	north_sweden	866	3740851	1691743	392543	True	True	True	False
+705	CL	logo	outer	relict	882	3765832	1688322	396523	True	True	True	False
+705	CL	logo	outer	south_sweden	775	3477768	1691600	361002	True	True	True	False
+705	CL	logo	outer	spain	804	3673130	1688332	384836	True	True	True	False
+705	CL	logo	outer	western_europe	814	3755848	1713948	408214	True	True	True	False
+748	stomata density	logo	outer	admixed	295	4571038	1740859	552318	True	True	True	False
+748	stomata density	logo	outer	central_europe	307	4713320	1748011	591285	True	True	True	False
+748	stomata density	logo	outer	germany	313	4509410	1741465	547032	True	True	True	False
+748	stomata density	logo	outer	north_sweden	301	4574634	1725821	550716	True	True	True	False
+748	stomata density	logo	outer	south_sweden	212	4260685	1718006	493254	True	True	True	False
+748	stomata density	logo	outer	spain	240	4752252	1707756	576722	True	True	True	False
+748	stomata density	logo	outer	western_europe	312	4592745	1743073	562253	True	True	True	False

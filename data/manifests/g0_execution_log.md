@@ -119,3 +119,9 @@
 - Current evidence: formal build, QA, trait/split/near-clone/rank/analysis artifacts exist and no real phenotype prediction has been run; `runs/smoke_iid` and `runs/smoke_group` contain explicitly synthetic pilot outputs.
 - Current hypothesis: a manifest generated from final on-disk artifact hashes, canonical split set, code hashes and the pre-freeze Git HEAD will provide an auditable handoff without falsely binding a self-referential commit hash.
 - Minimal verification: recompute required artifact SHA256 values, reject any run whose audit trait is not `synthetic`, ensure all expected canonical files exist, run the complete test suite and a clean-tree/remote/CI verification after the freeze commit.
+
+## G0.1 confirmatory amendment
+
+- Current evidence: external audit correctly identifies that the v1 SESOI decision rule only establishes a positive CI with a point estimate above the margin; the baseline protocol is incomplete; and fold-specific COMMON eligibility was not checked before the first formal prediction.
+- Current hypothesis: before any real phenotype prediction, an amendment can freeze the stricter SESOI claim, the complete additive baseline protocol, and a genotype-only GPU feasibility audit for every frozen train partition without post-result contamination.
+- Minimal verification: compute only training genotype call/dosage counts from frozen split manifests; never load phenotype files or produce predictions; require every primary DTF1 blocked outer/inner partition to have at least 250K COMMON markers.
