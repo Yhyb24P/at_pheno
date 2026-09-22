@@ -1,0 +1,90 @@
+{
+  "schema": "confirmatory_splits_v1",
+  "status": "CONFIRMATORY_SPLITS_FROZEN",
+  "canonical_salt": "at_pheno_split_v1",
+  "alternate_outer_salts": [
+    "at_pheno_split_v1_s2",
+    "at_pheno_split_v1_s3"
+  ],
+  "design": "IDs/presence/published-groups/exact-nearclone-blocks only; no phenotype numeric values",
+  "inputs_sha256": {
+    "trait_panel": "c256a6331da57c8684d6019e6902afba50b4f7843f0fa7a6d669c4aca9e87e88",
+    "blocks": "15cbd38bb20a756a577a9163495d068060d2bcd9761ac5152619d4b8256f5c95",
+    "samples": "2bb2bb5b90d9132cbff3b8489c651a9057f592cd7e81565ca8fbec8503b122ce"
+  },
+  "traits": [
+    {
+      "trait_id": "703",
+      "trait_name": "DTF1",
+      "n": 936,
+      "groups": {
+        "admixed": 128,
+        "asia": 65,
+        "central_europe": 169,
+        "germany": 80,
+        "italy_balkan_caucasus": 92,
+        "north_sweden": 50,
+        "relict": 23,
+        "south_sweden": 136,
+        "spain": 102,
+        "western_europe": 91
+      },
+      "global_blocks_present": 936,
+      "max_present_block": 1
+    },
+    {
+      "trait_id": "748",
+      "trait_name": "stomata density",
+      "n": 330,
+      "groups": {
+        "admixed": 35,
+        "central_europe": 23,
+        "germany": 17,
+        "north_sweden": 29,
+        "south_sweden": 118,
+        "spain": 90,
+        "western_europe": 18
+      },
+      "global_blocks_present": 330,
+      "max_present_block": 1
+    },
+    {
+      "trait_id": "704",
+      "trait_name": "RL",
+      "n": 850,
+      "groups": {
+        "admixed": 116,
+        "asia": 63,
+        "central_europe": 167,
+        "germany": 76,
+        "italy_balkan_caucasus": 84,
+        "north_sweden": 24,
+        "relict": 20,
+        "south_sweden": 117,
+        "spain": 93,
+        "western_europe": 90
+      },
+      "global_blocks_present": 850,
+      "max_present_block": 1
+    },
+    {
+      "trait_id": "705",
+      "trait_name": "CL",
+      "n": 904,
+      "groups": {
+        "admixed": 123,
+        "asia": 65,
+        "central_europe": 168,
+        "germany": 77,
+        "italy_balkan_caucasus": 92,
+        "north_sweden": 38,
+        "relict": 22,
+        "south_sweden": 129,
+        "spain": 100,
+        "western_europe": 90
+      },
+      "global_blocks_present": 904,
+      "max_present_block": 1
+    }
+  ]
+}

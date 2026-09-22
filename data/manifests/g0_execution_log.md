@@ -95,3 +95,9 @@
 - Current evidence: the 250K rule yields 16 primary edges and 2,686 edges at the already registered 0.002 sensitivity cutoff, while full-HDF5 examination of the apparent 13-member component removes several 250K-only edges. At a true distance of 0.001, a 250K binary sample has standard error about 0.000063; using 0.002 as a candidate screen is therefore more than fifteen standard errors above the primary boundary.
 - Current hypothesis: retain the frozen 250K coordinate panel and 0.001 primary *edge definition*, but use its registered 0.002 sensitivity graph only to nominate candidate pairs, then compute exact all-HDF5 Hamming distance for every candidate before the 0.001 connected-component operation. This removes threshold sampling noise without changing the biological threshold or using phenotype information.
 - Minimal verification: materialize the 0.002 candidate pairs, exact-check all of them in bounded HDF5 chunks, record the conservative screen's model-based false-negative bound, and verify that the full exact primary graph is a subset of candidates before considering any replacement of the provisional blocker.
+
+## TASK08
+
+- Current evidence: exact-refined full-HDF5 blocks pass the chain rule; the selected trait snapshots have unique published accession IDs, but the prior cohort-membership artifact does not include 703/704/705/748.
+- Current hypothesis: the split generator can read only accession IDs from each registry-bound raw snapshot, intersect them with exact blocks and published group labels, and validate the pre-frozen finite-panel count without inspecting any `phenotype_value` field.
+- Minimal verification: fixture-test deterministic block assignment, outer/inner block non-crossing, group-only balancing, and failure on a trait ID count that disagrees with the frozen panel before emitting canonical, alternate-salt, IID, or LOGO manifests.
