@@ -65,3 +65,9 @@
 - Current evidence: `BUILD_COMPLETE.json` exists only after the formal builder's value-domain/shape/hash checks; however its preliminary QC is intentionally insufficient because it was produced in the build process rather than by an independent reread of final artifacts.
 - Current hypothesis: a post-build QA reader can stream final matrix blocks and `variants.tsv`, compare the compact runtime index, verify VCF/HDF5 sample order, and recompute the deterministic 2,000-site HDF5 orientation check without reading phenotypes.
 - Minimal verification: fixture-test matrix-domain and variant-order failures, then run the QA only against the final `BUILD_COMPLETE` artifact and emit its own SHA256-bound report.
+
+### TASK06 provenance-contract correction
+
+- Current evidence: selected local `raw_values/*.json` bytes do not equal `trait_resolution_v1.tsv.values_sha256`; inspection of the acquisition code proves that field is the remote HTTP response digest, whereas the local files were intentionally parsed and re-serialized with `json.dumps(...)+"\\n"`. Remote re-fetch currently fails with a connection reset, so byte identity cannot be re-established by a new download.
+- Current hypothesis: these are distinct hash domains, not evidence of a changed phenotype table. The freeze record must retain the registry's remote-response hash, add a separately recomputed local-file SHA256, and require semantic invariants (finite unique accession count, no selected duplicates, trait name/status) before it can use the local snapshot.
+- Minimal verification: do not overwrite the registry hash; emit both hashes and their explicit non-equality, validate every selected raw snapshot against its registry counts/status, and make the remote re-fetch failure an auditable limitation rather than a silent pass.
