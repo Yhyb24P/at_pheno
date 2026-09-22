@@ -53,3 +53,9 @@
 - Current evidence: the five chromosome workers ran correctly but their Python parsing shared one interpreter GIL, leaving approximately 6 of 24 CPU cores busy despite a multithreaded HTSlib invocation.
 - Current hypothesis: splitting the CSI-indexed TAIR10 coordinate ranges into 12 disjoint regions and using independent processes will preserve exact source coverage while allowing the parser and HTSlib reader stages to use the available CPU capacity.
 - Minimal verification: generate contiguous, gap-free intervals covering each chromosome exactly once; retain the same stream state machine and additive/sample-order merger test before restarting the full scan.
+
+## TASK03
+
+- Current evidence: the full VCF preflight now passes with 10,707,430 accepted records, and the existing source-derived biallelic catalog supplies the required ordered `(chromosome, position, REF, ALT, source_record_index)` rows with a recorded SHA256.
+- Current hypothesis: a five-chromosome HTSlib query can write non-overlapping column ranges of one preallocated `int8` `.npy` memmap, while each worker stream-checks its query keys against the catalog; this avoids a Python list/float matrix and retains the original VCF record index without a second semantic VCF parser.
+- Minimal verification: test fixed-width GT-byte conversion, catalog/query key mismatch rejection, FILTER/structural query expression, atomic partial-to-final finalization, and a real VCF interval against independent direct extraction before any full build.
