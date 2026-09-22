@@ -111,7 +111,8 @@ def run(args):
     mode = getattr(args, "mode", "pilot")
     formal_path, formal_record = (gate_v2(args.data, args.trait,
                                           getattr(args, "source_vcf", None),
-                                          getattr(args, "registry", None))
+                                          getattr(args, "registry", None),
+                                          getattr(args, "source_manifest", None))
                                   if mode == "formal" else (None, None))
     x, rows, ids, variants, y, groups, audit = load_dataset(args.data, args.trait)
     if len(y) < 12:

@@ -66,7 +66,7 @@ def _sha256(path):
 
 
 def build_fixture(tmp_path):
-    """Tiny deterministic dataset; returns (data_dir, registry_tsv, source_vcf)."""
+    """Tiny deterministic dataset; returns (data_dir, registry, source_vcf, source_manifest)."""
     data = tmp_path/"data"
     data.mkdir()
     np.save(data/"genotypes.npy", GENOTYPES)
@@ -86,10 +86,18 @@ def build_fixture(tmp_path):
         encoding="utf-8")
     vcf = tmp_path/"synthetic_tiny.vcf"
     vcf.write_text("\n".join(VCF_LINES) + "\n", encoding="utf-8")
-    return data, registry, vcf
+    manifest = data/"source_manifest.json"
+    manifest.write_text(json.dumps({
+        "series": "synthetic_vcf_source_manifest",
+        "vcf_path": str(vcf),
+        "local_sha256": hashlib.sha256(vcf.read_bytes()).hexdigest(),
+        "official_md5": hashlib.md5(vcf.read_bytes()).hexdigest(),
+        "md5_matches_official": True,
+    }), encoding="utf-8")
+    return data, registry, vcf, manifest
 
 
-def make_record(data, registry, vcf, **overrides):
+def make_record(data, registry, vcf, manifest, **overrides):
     """The full v2 record, binding all files as they exist *right now*."""
     record = {
         "provenance_schema": PROVENANCE_SCHEMA_V2,
@@ -100,6 +108,7 @@ def make_record(data, registry, vcf, **overrides):
         "phenotypes_sha256": _sha256(data/"phenotypes.tsv"),
         "registry_sha256": _sha256(registry),
         "source_vcf_sha256": _sha256(vcf),
+        "source_manifest_sha256": _sha256(manifest),
         "official_source_md5": hashlib.md5(vcf.read_bytes()).hexdigest(),
         "vcf_filter_policy": "PASS-only; q4-filtered variants excluded",
         "multiallelic_policy": "multi-allelic excluded unsplittable",
@@ -114,18 +123,21 @@ def make_record(data, registry, vcf, **overrides):
     return record
 
 
-def write_record(data, registry, vcf, **overrides):
+def write_record(data, registry, vcf, manifest, **overrides):
     (data/"provenance.json").write_text(
-        json.dumps(make_record(data, registry, vcf, **overrides)), encoding="utf-8")
+        json.dumps(make_record(data, registry, vcf, manifest, **overrides)),
+        encoding="utf-8")
 
 
 def run_gate(data, registry, vcf):
-    return gate_v2(data, TRAIT, source_vcf=vcf, registry=registry)
+    # build_fixture wrote the source manifest into the dataset dir
+    return gate_v2(data, TRAIT, source_vcf=vcf, registry=registry,
+                   source_manifest=data/"source_manifest.json")
 
 
 def test_gate_binds_all_six_and_passes_intact(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     path, record = run_gate(data, registry, vcf)
     assert path == data/"provenance.json"
     assert record["provenance_schema"] == PROVENANCE_SCHEMA_V2
@@ -139,8 +151,8 @@ def test_gate_binds_all_six_and_passes_intact(tmp_path):
 
 
 def test_phenotype_tamper_after_record_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)                  # intact record passes
     (data/"phenotypes.tsv").write_text(
         "accession_id\ttrait_id\tvalue\nsynth_a\tdemo_trait\t1.0\n", encoding="utf-8")
@@ -149,8 +161,8 @@ def test_phenotype_tamper_after_record_rejected(tmp_path):
 
 
 def test_variants_tamper_after_record_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)
     table = "\n".join(f"{c}\t{p}\t{r}\t{a}" for c, p, r, a in MARKERS)
     (data/"variants.tsv").write_text(
@@ -161,8 +173,8 @@ def test_variants_tamper_after_record_rejected(tmp_path):
 
 
 def test_samples_tamper_after_record_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)
     (data/"samples.tsv").write_text(
         "accession_id\tgenetic_group\nsynth_a\tG1\n", encoding="utf-8")
@@ -171,8 +183,8 @@ def test_samples_tamper_after_record_rejected(tmp_path):
 
 
 def test_registry_and_source_vcf_are_recomputed_targets(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)
     registry.write_text("trait_id\ttarget_status\nother_trait\tPENDING\n",
                         encoding="utf-8")
@@ -181,22 +193,22 @@ def test_registry_and_source_vcf_are_recomputed_targets(tmp_path):
 
 
 def test_unresolved_registry_record_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)                  # resolved true passes
-    write_record(data, registry, vcf,
+    write_record(data, registry, vcf, manifest,
                  phenotype_registry={"trait_id": TRAIT, "resolved": False})
     with pytest.raises(ValueError, match="phenotype_registry"):
         run_gate(data, registry, vcf)
-    write_record(data, registry, vcf,
+    write_record(data, registry, vcf, manifest,
                  phenotype_registry={"trait_id": "other_trait", "resolved": True})
     with pytest.raises(ValueError, match="phenotype_registry"):
         run_gate(data, registry, vcf)
 
 
 def test_v1_shaped_record_rejected_on_schema(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    full = make_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    full = make_record(data, registry, vcf, manifest)
     # The v1 record shape: intake/example fields, no v2 binding keys
     v1 = {
         "dataset_id": full["dataset_id"],
@@ -214,19 +226,19 @@ def test_v1_shaped_record_rejected_on_schema(tmp_path):
     with pytest.raises(ValueError, match="provenance_schema"):
         run_gate(data, registry, vcf)
     # and an explicit wrong version value is refused at the same field
-    write_record(data, registry, vcf, provenance_schema="at_pheno_formal_v1")
+    write_record(data, registry, vcf, manifest, provenance_schema="at_pheno_formal_v1")
     with pytest.raises(ValueError, match="provenance_schema"):
         run_gate(data, registry, vcf)
 
 
 def test_syntactically_valid_source_hash_not_trusted(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
     # 64-hex format alone is no verification
-    write_record(data, registry, vcf, source_vcf_sha256="f"*64)
+    write_record(data, registry, vcf, manifest, source_vcf_sha256="f"*64)
     with pytest.raises(ValueError, match="source_vcf_sha256"):
         run_gate(data, registry, vcf)
     # a file change after the record is also caught by the recompute
-    write_record(data, registry, vcf)
+    write_record(data, registry, vcf, manifest)
     run_gate(data, registry, vcf)
     vcf.write_text("\n".join(VCF_LINES + ["1\t300\t.\tT\tC\t.\tPASS\t.\t0/0"]) + "\n",
                    encoding="utf-8")
@@ -235,15 +247,15 @@ def test_syntactically_valid_source_hash_not_trusted(tmp_path):
 
 
 def test_bad_reference_assembly_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf, reference_assembly="TAIR11")
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest, reference_assembly="TAIR11")
     with pytest.raises(ValueError, match="reference_assembly"):
         run_gate(data, registry, vcf)
 
 
 def test_missing_bound_files_rejected(tmp_path):
-    data, registry, vcf = build_fixture(tmp_path)
-    write_record(data, registry, vcf)
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
     (data/"genotypes.npy").unlink()
     with pytest.raises(ValueError, match="genotypes_sha256"):
         run_gate(data, registry, vcf)
@@ -254,6 +266,86 @@ def test_missing_bound_files_rejected(tmp_path):
     # and no recompute target at all
     with pytest.raises(ValueError, match="source_vcf_sha256"):
         gate_v2(data, TRAIT, source_vcf=None, registry=registry)
+
+
+# --- Registry truth: the record's resolved flag is not the truth source (goal 1) ---
+
+def test_registry_duplicate_blocked_rejects_resolved_record(tmp_path):
+    """registry says REQUIRES_DUPLICATE_RESOLUTION, record claims resolved
+    true -> MUST FAIL (settled goal item 2)."""
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    registry.write_text(
+        "trait_id\ttarget_status\n"
+        "demo_trait\tREQUIRES_DUPLICATE_RESOLUTION\n", encoding="utf-8")
+    write_record(data, registry, vcf, manifest)    # binds the blocked registry
+    with pytest.raises(ValueError, match="target_status"):
+        run_gate(data, registry, vcf)
+
+
+def test_registry_duplicate_trait_rows_rejected(tmp_path):
+    """A trait listed more than once in the registry is never resolvable
+    (goal 1: the requested trait must exist uniquely)."""
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    registry.write_text(
+        "trait_id\ttarget_status\n"
+        "demo_trait\tPUBLISHED_ACCESSION_VALUE_USABLE\n"
+        "demo_trait\tREQUIRES_DUPLICATE_RESOLUTION\n", encoding="utf-8")
+    write_record(data, registry, vcf, manifest)
+    with pytest.raises(ValueError, match="exactly once"):
+        run_gate(data, registry, vcf)
+
+
+def test_registry_missing_trait_rejects_resolved_record(tmp_path):
+    """A trait the registry never lists cannot back a resolved record."""
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    registry.write_text(
+        "trait_id\ttarget_status\nother_trait\tPUBLISHED_ACCESSION_VALUE_USABLE\n",
+        encoding="utf-8")
+    write_record(data, registry, vcf, manifest)
+    with pytest.raises(ValueError, match="phenotype_registry"):
+        run_gate(data, registry, vcf)
+
+
+def test_registry_wide_tsv_header_driven_parsing(tmp_path):
+    """The committed data-semantic registry is a wide TSV (19 columns);
+    truth parsing must be header-driven, not assuming column 0/1."""
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    registry.write_text(
+        "trait_id\ttrait_name\ttarget_status\n"
+        "demo_trait\tDTF1-synthetic\tPUBLISHED_ACCESSION_VALUE_USABLE\n",
+        encoding="utf-8")
+    write_record(data, registry, vcf, manifest)
+    path, record = run_gate(data, registry, vcf)   # wide header parses fine
+    assert record["phenotype_registry"]["trait_id"] == TRAIT
+
+
+# --- Official-MD5 cross-bound via the SHA256-bound source manifest (goal 4) ---
+
+def test_manifest_flag_falsy_rejects_gate(tmp_path):
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    m = json.loads(manifest.read_text())
+    m["md5_matches_official"] = False
+    manifest.write_text(json.dumps(m), encoding="utf-8")
+    write_record(data, registry, vcf, manifest)
+    with pytest.raises(ValueError, match="md5_matches_official"):
+        run_gate(data, registry, vcf)
+
+
+def test_manifest_sha_binding_tamper_rejected(tmp_path):
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest)
+    m = json.loads(manifest.read_text())
+    m["official_md5"] = "0" * 32                     # record/tamper the manifest
+    manifest.write_text(json.dumps(m), encoding="utf-8")
+    with pytest.raises(ValueError, match="source_manifest_sha256"):
+        run_gate(data, registry, vcf)
+
+
+def test_record_official_md5_must_equal_manifest(tmp_path):
+    data, registry, vcf, manifest = build_fixture(tmp_path)
+    write_record(data, registry, vcf, manifest, official_source_md5="0" * 32)
+    with pytest.raises(ValueError, match="official_source_md5"):
+        run_gate(data, registry, vcf)
 
 
 def test_mapping_summary_binds_source_vcf_provenance():
