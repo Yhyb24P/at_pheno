@@ -151,6 +151,24 @@ def read_catalog(path):
             yield chrom, int(pos), ref, alt, int(idx)
 
 
+def catalog_content_md5(path):
+    """MD5 of the whole UNPACKED TSV byte stream (header line included).
+
+    This is the logical-content hash: identical across re-gzips of the
+    same TSV text (gzip header mtime is not part of it).  Contrast with
+    the .tsv.gz file SHA256 (`compressed_artifact_sha256`): that one
+    covers the exact on-disk .gz bytes and changes whenever the file is
+    re-gzipped even with identical content, so it verifies transfer of
+    a specific artifact, NOT content identity.  Use
+    logical_content_md5 to compare audit runs; use compressed
+    artifact sha for file transfer only."""
+    with gzip.open(Path(path), "rb") as handle:
+        h = hashlib.md5()
+        for chunk in iter(lambda: handle.read(1024*1024), b""):
+            h.update(chunk)
+        return h.hexdigest()
+
+
 # ---------------------------------------------------------------------------
 # 3.3 position mapping
 # ---------------------------------------------------------------------------
@@ -1117,7 +1135,8 @@ def _run_cli(args) -> int:
                                    chroms=chroms)
     catalog_provenance = {
         "path": str(args.catalog),
-        "sha256": file_sha256(args.catalog),
+        "compressed_artifact_sha256": file_sha256(args.catalog),
+        "logical_content_md5": catalog_content_md5(args.catalog),
         "catalog_rows": mapping.get("catalog_rows"),
         "duplicate_chrom_position_pairs":
             mapping.get("duplicate_chrom_position_pairs"),
@@ -1125,7 +1144,14 @@ def _run_cli(args) -> int:
             mapping.get("duplicate_chrom_position_ref_alt_quadruples"),
         "note": ("provenance recorded, not re-verified against the "
                  "VCF-side delivery notes (3.3/3.4 cross-check "
-                 "residues); the biallelic-SNP policy set only"),
+                 "residues); the biallelic-SNP policy set only. "
+                 "Hash distinction: compressed_artifact_sha256 is the "
+                 "byte-identity hash of one .tsv.gz file (gzip header "
+                 "carries mtime; verifies transfer of that artifact, "
+                 "NOT content identity). logical_content_md5 is the "
+                 "MD5 of the unpacked TSV stream (stable across "
+                 "re-gzips of the same content; the hash to compare "
+                 "audit runs against)."),
     }
 
     # ---- 3.4 step-2 join ------------------------------------

@@ -9,14 +9,28 @@ tampering must be rejected by a ValueError naming the breached
 field;  intact, the gate passes.
 """
 
+import gzip
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 from at_pheno.formal_provenance import PROVENANCE_SCHEMA_V2, gate_v2
+
+# Committed catalog artifact (untracked on purpose; the check below
+# self-skips in checkouts that do not carry the large deliverable).
+CATALOG = "data/manifests/1001g_v31_biallelic_snp_catalog.tsv.gz"
+
+
+def _md5_of_unpacked_gz(path):
+    h = hashlib.md5()
+    with gzip.open(path, "rb") as stream:
+        for chunk in iter(lambda: stream.read(1024*1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 # Static synthetic source VCF: 13 lines, deterministic content.
 VCF_LINES = [
@@ -364,3 +378,35 @@ def test_mapping_summary_binds_source_vcf_provenance():
     assert prov["official_md5"] == source["official_md5"]
     assert prov["md5_matches_official"] is source["md5_matches_official"]
     assert prov["recorded_in"] == "data/manifests/1001g_v31_population_vcf_source.json"
+
+
+def test_catalog_provenance_keeps_hashes_distinct():
+    """The catalog block must keep the two hashes distinct (goal 5):
+    a byte-identity hash of one .gz artifact vs the content-identity
+    hash of the unpacked TSV; the bare `sha256` key is gone."""
+    repo = Path(__file__).resolve().parents[1]
+    summary = json.loads(
+        (repo/"data/manifests/hdf5_vcf_position_mapping_summary.json").read_text(
+            encoding="utf-8"))
+    cat = summary["catalog_provenance"]
+    assert "sha256" not in cat, "bare sha256 key smashes the artifact/logical distinction"
+    comp = cat["compressed_artifact_sha256"]
+    logical = cat["logical_content_md5"]
+    assert len(comp) == 64 and all(c in "0123456789abcdef" for c in comp)
+    assert len(logical) == 32 and all(c in "0123456789abcdef" for c in logical)
+    assert "content" in cat["note"] and "artifact" in cat["note"]
+
+
+def test_catalog_logical_md5_matches_fresh_unpacked_stream():
+    """The recorded logical_content_md5 must equal a fresh md5 of the
+    unpacked TSV stream on disk (the deliverable (61 MB) is
+    worktree-local; the check is self-verifying when the file is
+    present, and raises a readable error otherwise)."""
+    if not os.path.isfile(CATALOG):
+        pytest.skip("catalog .tsv.gz not on disk in this checkout")
+    h = _md5_of_unpacked_gz(CATALOG)
+    repo = Path(__file__).resolve().parents[1]
+    summary = json.loads(
+        (repo/"data/manifests/hdf5_vcf_position_mapping_summary.json").read_text(
+            encoding="utf-8"))
+    assert summary["catalog_provenance"]["logical_content_md5"] == h

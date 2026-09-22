@@ -93,7 +93,11 @@ streaming merge / sorted join（`scripts/audit_hdf5_vcf_mapping.py`，§3.3 六�
 （排除第 8 列字面量 `FORMAT`） == accession 升序，1,135/1,135 一一对应；官方
 1135 表 `Accession_ID` 列的集合相同（表的行序不同，因此表行序不作序证据）。
 样本重复/共享上下文（`--sample-file` JSON）记录此事，`shared_fraction = 1.0`；
-SAMPLE-ORDERING 仍按规范保持人工 cross-check 事实，不作推断。
+SAMPLE-ORDERING 交叉核对应（VCF 样本列序 vs HDF5 样本行序）已由
+`tests/test_sample_ordering_hdf5_vcf.py` 机器核验：提交件 `1001g_hdf5_2026-09-22.json`
+的 `accessions` 与 `1001g_v31_vcf_header_sample_audit.json` 的 `sample_ids` 集合与顺序
+均一致（1,135/1,135，0 分歧），自该测试起不再作为未决人工项（accession 表的
+行序一次 recording 仍只当集合证据）
 
 两侧 as-is 计数（2,270,000 单元格 = 2,000 × 1,135）：
 
@@ -192,6 +196,9 @@ catalog gz（不入 git；mtime-dependent sha，见下）
   （仓库内小 JSON；53.7 MB 的 VCF 侧 spot JSON 未入 Git，其制品值同样录制：）
   1001g_v31_concordance_spot_check.json      5bdf639d298b2d9569e8f7876c51e65c8b237176b32c97ce9837bb3033dd67a5 [工作区制品，不入 Git]
   hdf5_vcf_position_mapping_summary.json      5cbed77e48040d3f5658c69435bbea5341dbcbc944e7d3701f36ccb5f5f4513d
+  （上行为 e672fae 提交时快照；后续提交追加 `source_vcf_provenance` 块与 catalog 双哈希
+  拆分后，当前工作区值为：）
+  hdf5_vcf_position_mapping_summary.json      5765a2d2af64032835de3ce1f55033d951032e8ae4e3d86aa8280ccd325afb8e
   hdf5_vcf_concordance_spot_check.json        03d14a62b7a1d5514a83caa72db06b6f7a2ab27084d5340ef11c005c35062dbf
   1001g_hdf5_2026-09-22.json                  ef52a70c48eabbc46c26ae51372c880ec7de5430ea2a69c6ccbd84c3ab360af1
 ```
@@ -199,8 +206,14 @@ catalog gz（不入 git；mtime-dependent sha，见下）
 catalog gz 确定性说明（两遍同命令实跑，/tmp 侧 07:08 与 07:18）：
 **展开内容逐字节一致**（展开 md5 均为 `829ccfcab58107f57fce4683858c10f9`）；
 gz 整包 sha 仅相差 gzip 头 mtime 字段的 2 字节（全流字节 diff 即第 4-5 字节），
-因此 catalog gz 整包 sha256（上文 `3164…`，含本轮 mtime）**不是**稳定完整性标记；
-git 只提交小 JSON 与脚本；如需内容一致性复核，重跑脚本后比较展开内容（上条 md5）即可。
+因此 catalog gz 整包 sha256（上文 `3164…`，含本轮 mtime）**不是**稳定完整性标记。
+committed `hdf5_vcf_position_mapping_summary.json` → `catalog_provenance` 因此**区分两字段**：
+`compressed_artifact_sha256`（.gz 文件字节哈希，mtime 敏感——只验文件传输，
+该 mtime 敏感值**不可**称 logical/content 哈希）与 `logical_content_md5`（展开 TSV 流
+MD5 = `829ccfcab58107f57fce4683858c10f9`，内容身份——跨重打包稳定，审计比较用此值）。
+zip 物理行为由 `scripts/audit_hdf5_vcf_mapping.py::catalog_content_md5` 重算承接；
+`test_catalog_provenance_keeps_hashes_distinct` 锁住字段拆分（禁止裸 `sha256` 键冒充内容哈希）。
+git 只提交小 JSON 与脚本；如需内容一致性复核，重跑脚本后比较展开内容（`logical_content_md5`）即可。
 
 复现（同机重跑）：
 

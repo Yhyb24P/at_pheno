@@ -16,11 +16,12 @@
   },
   "catalog_provenance": {
     "path": "data/manifests/1001g_v31_biallelic_snp_catalog.tsv.gz",
-    "sha256": "31649a02b053928bb4eb54065e551414f68e1747d185933801ffff5f206d3b59",
+    "compressed_artifact_sha256": "31649a02b053928bb4eb54065e551414f68e1747d185933801ffff5f206d3b59",
+    "logical_content_md5": "829ccfcab58107f57fce4683858c10f9",
     "catalog_rows": 10707430,
     "duplicate_chrom_position_pairs": 0,
     "duplicate_chrom_position_ref_alt_quadruples": 0,
-    "note": "provenance recorded, not re-verified against the VCF-side delivery notes (3.3/3.4 cross-check residues); the biallelic-SNP policy set only"
+    "note": "provenance recorded, not re-verified against the VCF-side delivery notes (3.3/3.4 cross-check residues); the biallelic-SNP policy set only. Hash distinction: compressed_artifact_sha256 is the byte-identity hash of one .tsv.gz file (gzip header carries mtime; verifies transfer of that artifact, not content identity). logical_content_md5 is the MD5 of the unpacked TSV stream (stable across re-gzips of the same content; the hash to compare audit runs against)"
   },
   "source_vcf_provenance": {
     "path": "data/raw/1001g_v3.1/1001genomes_snp-short-indel_only_ACGTN.vcf.gz",

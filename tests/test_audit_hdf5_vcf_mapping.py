@@ -717,6 +717,15 @@ def test_cli_round_trip_pass(tmp_path):
     for key, want in CLEAN_EXPECT.items():
         assert position_mapping[key] == want, key
     assert mapping_payload["gate"]["status"] == "PASS"
+    # Goal 5: catalog provenance keeps the two hashes distinct and the
+    # bare `sha256` key must not reappear as a "content" claim
+    cat = mapping_payload["catalog_provenance"]
+    assert "sha256" not in cat, "no bare sha256 key: artifact vs content split"
+    content = ("chromosome\tposition\tref\talt\tsource_record_index\n"
+               + "".join(f"{c}\t{p}\t{r}\t{a}\t{i}\n"
+                         for c, p, r, a, i in CLEAN_ROWS))
+    assert cat["logical_content_md5"] == _md5(content)
+    assert len(cat["compressed_artifact_sha256"]) == 64
     spot_payload = json.loads(
         (out / "hdf5_vcf_concordance_spot_check.json").read_text())
     spot_check = spot_payload["spot_check"]
@@ -730,6 +739,31 @@ def test_cli_round_trip_pass(tmp_path):
     assert spot_check["overall"]["best_orientation"] == "hdf5_0_is_ref"
     assert spot_payload["gate"]["gate"] == \
         "VCF_SEMANTICS_READY_FOR_CONVERSION"
+
+
+def _md5(text):
+    import hashlib as _hashlib
+    return _hashlib.md5(text.encode("utf-8")).hexdigest()
+
+
+def test_catalog_regzip_stable_md5_unstable_artifact_sha(tmp_path):
+    """The same TSV text re-gzipped yields identical
+    logical_content_md5 but different compressed-artifact SHA256
+    (gzip mtime header) — the two hashes are inherently different
+    claims and must never be conflated."""
+    mod = _module()
+    payload = ("chromosome\tposition\tref\talt\tsource_record_index\n"
+               "1\t100\tA\tC\t1\n").encode("utf-8")
+    with open(tmp_path / "a.tsv.gz", "wb") as f1, open(tmp_path / "b.tsv.gz", "wb") as f2:
+        with gzip.GzipFile(fileobj=f1, mode="wb", mtime=0) as g1:
+            g1.write(payload)
+        with gzip.GzipFile(fileobj=f2, mode="wb", mtime=999999) as g2:
+            g2.write(payload)
+    a, b = tmp_path / "a.tsv.gz", tmp_path / "b.tsv.gz"
+    assert mod.catalog_content_md5(a) == mod.catalog_content_md5(b)
+    assert mod.catalog_content_md5(a) == _md5(payload.decode("utf-8"))
+    assert mod.file_sha256(a) != mod.file_sha256(b), \
+        "re-gzip changes the artifact hash: artifact claims are transport, not content"
 
 
 def test_cli_round_trip_unresolved_paths(tmp_path):
