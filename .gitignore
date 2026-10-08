@@ -1,45 +1,27 @@
-# --- Python ---
+# Python and local environment
 __pycache__/
-*.pyc
-*.pyo
-.ipynb_checkpoints/
-
-# --- 虚拟环境 ---
+*.py[cod]
 .venv/
 venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
 
-# --- 日志 / 系统 ---
-*.log
-.DS_Store
-
-# --- 基因组大文件（挡；如个别小 marker 列表需入库，用 git add -f 单独处理）---
+# Local datasets and experiment outputs
+preprocessing/raw/
+preprocessing/processed/
+runs/
 *.vcf.gz
 *.bcf
 *.bam
 *.bai
-
-# --- 模型存档 ----
 *.pt
 *.pth
 *.onnx
 
-# --- 大型审计产物（逻辑哈希已随同 JSON manifest 入库；本体 60 MB 级，不进 Git）---
-data/manifests/*.tsv.gz
-data/manifests/1001g_v31_concordance_spot_check.json
-# Reconstructible 250K near-clone sampling design payload; its SHA256 is
-# bound by the later confirmatory freeze manifest, not tracked as source code.
-data/manifests/confirmatory_v1/nearclone_v1/nearclone_marker_panel.tsv
-
-# --- 工作笔记 / 交付包等临时文件 ---
+# Temporary files
+*.log
+.DS_Store
 tmp/
-
-# Reproducible environments and generated research outputs
-.pytest_cache/
-*.egg-info/
-dist/
-build/
-data/raw/
-data/interim/
-data/processed/
-runs/*/
-reference/BiMSGP/

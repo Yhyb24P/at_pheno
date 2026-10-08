@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata below."
-title: "at_pheno: auditable Arabidopsis genomic prediction experiments"
+title: "at_pheno: Arabidopsis marker density and phenotype prediction"
 type: software
 authors:
   - name: Yhyb24P

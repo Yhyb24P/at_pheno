@@ -1,0 +1,11 @@
+name: at-pheno
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - numpy=2.5.3
+  - pytest=9.1.1
+  - pip
+  - pip:
+      - -e .

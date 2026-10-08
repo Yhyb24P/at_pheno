@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from at_pheno.core import (additive_kernel, binary_additive_kernel, fit_binary_qc,
+from at_pheno.core import (additive_kernel,
                            fit_qc, marker_order, predict, random_folds, scores, select)
 
 
@@ -61,15 +61,21 @@ def test_inner_qc_excludes_variant_seen_only_in_inner_validation():
     assert fit_qc(x, [0, 1, 2]).columns.tolist() == [0]
 
 
-def test_orientation_unknown_binary_kernel_is_allele_flip_invariant():
-    rng = np.random.default_rng(11)
-    x = rng.integers(0, 2, (10, 12), dtype=np.int8)
-    train, test = np.arange(7), np.arange(7, 10)
-    qc = fit_binary_qc(x, train, min_minor_state_frequency=0)
-    k, cross = binary_additive_kernel(x, train, test, qc, block_size=3)
-    flipped = x.copy()
-    flipped[:, [1, 4, 8]] = 1-flipped[:, [1, 4, 8]]
-    other = fit_binary_qc(flipped, train, min_minor_state_frequency=0)
-    fk, fcross = binary_additive_kernel(flipped, train, test, other, block_size=2)
-    np.testing.assert_allclose(k, fk)
-    np.testing.assert_allclose(cross, fcross)
+
+def test_int8_missing_calls_are_excluded_from_training_statistics():
+    x = np.array([[0, 0], [1, 1], [2, -1], [0, 2]], dtype=np.int8)
+    qc = fit_qc(x, [0, 1, 2, 3], min_call_rate=0, min_maf=0)
+    assert qc.means.tolist() == [0.75, 1.0]
+    assert qc.frequencies.tolist() == [0.375, 0.5]
+    assert qc.call_rates.tolist() == [1.0, 0.75]
+    assert qc.mac.tolist() == [3, 3]
+
+
+def test_int8_missing_calls_contribute_zero_to_centered_kernel():
+    x = np.array([[0, 0], [1, 1], [2, -1], [0, 2]], dtype=np.int8)
+    qc = fit_qc(x, [0, 1, 2, 3], min_call_rate=0, min_maf=0)
+    k, cross = additive_kernel(x, [0, 1, 2, 3], [0, 1, 2, 3], qc)
+    z = np.array([[-0.75, -1.0], [0.25, 0.0], [1.25, 0.0], [-0.75, 1.0]])
+    expected = z @ z.T / (2 * .375 * .625 + 2 * .5 * .5)
+    np.testing.assert_allclose(k, expected)
+    np.testing.assert_allclose(cross, expected)

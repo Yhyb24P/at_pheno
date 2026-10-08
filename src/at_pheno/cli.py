@@ -1,4 +1,4 @@
-"""Small executable pilot. Large-scale ingestion and deep models are future stages."""
+"""Load prepared data and run the additive-kernel baseline."""
 
 import argparse
 import csv
@@ -14,7 +14,6 @@ import numpy as np
 
 from .core import (additive_kernel, fit_qc, grouped_folds, marker_order,
                    predict, random_folds, scores, select)
-from .formal_provenance import gate_v2
 
 
 def write_json(path, value):
@@ -44,7 +43,7 @@ def sha256(path):
     return h.hexdigest()
 
 
-def load_dataset(directory, trait, *, formal=False):
+def load_dataset(directory, trait):
     samples = read_table(directory/"samples.tsv", ["accession_id", "genetic_group"])
     variants = read_table(directory/"variants.tsv", ["chromosome", "position", "ref", "alt"])
     phenotypes = read_table(directory/"phenotypes.tsv", ["accession_id", "trait_id", "value"])
@@ -68,25 +67,6 @@ def load_dataset(directory, trait, *, formal=False):
     x = np.load(directory/"genotypes.npy", mmap_mode="r", allow_pickle=False)
     if x.ndim != 2 or x.shape != (len(ids), len(marker_ids)) or x.dtype.kind not in "fiu":
         raise ValueError("Genotype shape/type does not match manifests")
-    if formal and x.dtype != np.int8:
-        raise ValueError(
-            "Formal genotype storage requires dtype int8; "
-            f"got dtype {x.dtype}. Pilot storage may use float hard calls with NaN.")
-    # Validate the entire matrix in bounded memory, including future test calls.
-    # The formal int8 ALT-dosage contract maps to the storage directly
-    # (-1 missing, 0/1/2 ALT dosage): the block check is dtype-aware.
-    if x.dtype == np.int8:
-        for start in range(0, x.shape[1], 4096):
-            g = x[:, start:start+4096]
-            if np.any((g < -1) | (g > 2)):
-                raise ValueError(
-                    "Genotypes must satisfy the int8 ALT-dosage contract: "
-                    "values -1/0/1/2, -1 missing, 0/1/2 ALT dosage")
-    else:
-        for start in range(0, x.shape[1], 4096):
-            g = x[:, start:start+4096]
-            if np.any(~(np.isnan(g) | (g == 0) | (g == 1) | (g == 2))):
-                raise ValueError("Genotypes must be diploid hard calls 0/1/2 or NaN")
     values, missing = {}, 0
     all_trait_ids = set()
     for row in phenotypes:
@@ -107,13 +87,13 @@ def load_dataset(directory, trait, *, formal=False):
     aligned_ids = [ids[i] for i in rows]
     y = np.array([values[s] for s in aligned_ids])
     groups = [samples[i]["genetic_group"] for i in rows]
-    audit = {"trait_id": trait, "genotyped_n": len(ids), "marker_n": len(marker_ids),
+    summary = {"trait_id": trait, "genotyped_n": len(ids), "marker_n": len(marker_ids),
              "phenotype_nonmissing_n": len(values), "phenotype_missing_n": missing,
              "intersection_n": len(rows), "phenotype_unmatched_ids": sorted(set(values)-set(ids)),
              "groups": {g: groups.count(g) for g in sorted(set(groups))}}
     if not len(rows):
         raise ValueError("No matched observations for this trait")
-    return x, rows, aligned_ids, marker_ids, y, groups, audit
+    return x, rows, aligned_ids, marker_ids, y, groups, summary
 
 
 def save_qc(path, qc):
@@ -122,19 +102,9 @@ def save_qc(path, qc):
 
 def run(args):
     config = tomllib.loads(args.config.read_text())
-    mode = getattr(args, "mode", "pilot")
-    # The formal gate never re-reads the raw source VCF: source identity
-    # is cross-bound to the SHA256-bound source-manifest record
-    # (bind_source_manifest), while the raw-file check is a dataset-
-    # build stage duty (at_pheno.formal_provenance.verify_source_vcf).
-    formal_path, formal_record = (gate_v2(args.data, args.trait,
-                                          registry=getattr(args, "registry", None),
-                                          source_manifest=getattr(args, "source_manifest", None))
-                                  if mode == "formal" else (None, None))
-    x, rows, ids, variants, y, groups, audit = load_dataset(
-        args.data, args.trait, formal=(mode == "formal"))
+    x, rows, ids, variants, y, groups, summary = load_dataset(args.data, args.trait)
     if len(y) < 12:
-        raise ValueError("Pilot requires at least 12 matched accessions")
+        raise ValueError("Training requires at least 12 matched accessions")
     if args.protocol == "group":
         fold = grouped_folds(groups)
     else:
@@ -163,7 +133,7 @@ def run(args):
     split_rows = [{"accession_id": s, "fold": int(f), "genetic_group": g}
                   for s, f, g in zip(ids, fold, groups)]
     write_table(args.out/"splits.tsv", split_rows, list(split_rows[0]))
-    write_json(args.out/"audit.json", audit)
+    write_json(args.out/"dataset.json", summary)
     write_json(args.out/"config.json", config)
     for outer in sorted(set(fold)):
         train, test = np.flatnonzero(fold != outer), np.flatnonzero(fold == outer)
@@ -229,28 +199,19 @@ def run(args):
     write_json(args.out/"metrics.json", metrics)
     write_json(args.out/"tuning.json", tuning)
     write_json(args.out/"omitted.json", omitted)
-    inputs = [args.data/name for name in ("genotypes.npy", "samples.tsv", "variants.tsv", "phenotypes.tsv")]
-    inputs += [args.config] + ([args.splits] if args.splits else []) + ([formal_path] if formal_path else [])
-    if mode == "formal":
-        # Experiment-run inputs: the re-verified registry TSV and the
-        # SHA256-bound source manifest.  The raw source VCF is
-        # deliberately NOT part of the run: by the contract, it is
-        # audited through the immutable manifest
-        # (verify_source_vcf was run at the dataset-build stage).
-        inputs += [getattr(args, "registry", None), getattr(args, "source_manifest", None)]
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True).strip()
     except subprocess.CalledProcessError:
         commit = None
     source_paths = sorted(Path(__file__).parent.glob("*.py"))
-    write_json(args.out/"provenance.json", {"status": "formal_data_contract_passed_not_confirmatory" if mode == "formal" else "pilot_not_confirmatory", "mode": mode, "code_commit": commit,
+    description = args.data / "dataset.json"
+    dataset_record = json.loads(description.read_text()) if description.exists() else None
+    write_json(args.out/"run.json", {"status": "pilot_not_confirmatory", "code_commit": commit,
         "python": platform.python_version(), "numpy": np.__version__, "elapsed_seconds": time.monotonic()-started,
         "source_sha256": {str(p): sha256(p) for p in source_paths},
-        "input_sha256": {str(p): sha256(p) for p in inputs}, "formal_dataset_provenance": formal_record,
-        "notes": ["Inner QC is refit, including frequency and eligibility.",
-                  "IID protocol is not kinship controlled.",
-                  "Pooled group PCC can be driven by between-group means; inspect fold metrics.",
-                  "No significance tests or biological claims are produced."]})
+        "data_directory": str(args.data), "dataset_description": dataset_record,
+        "notes": ["QC and imputation use only each training partition.",
+                  "This pilot does not implement the complete confirmatory protocol."]})
     print(json.dumps({"output": str(args.out), "matched_n": len(ids), "prediction_rows": len(predictions)}))
 
 
@@ -268,7 +229,7 @@ def demo(directory):
                 "ref": "A", "alt": "G"} for j in range(p)], ["chromosome", "position", "ref", "alt"])
     write_table(directory/"phenotypes.tsv", [{"accession_id": f"synthetic_{i:03}", "trait_id": "synthetic",
                 "value": float(y[i])} for i in range(n)], ["accession_id", "trait_id", "value"])
-    write_json(directory/"provenance.json", {"synthetic": True, "seed": 20260922,
+    write_json(directory/"dataset.json", {"synthetic": True, "seed": 20260922,
                "purpose": "Software smoke test; not Arabidopsis experimental evidence"})
     print(f"Synthetic fixture: {directory}")
 
@@ -276,37 +237,18 @@ def demo(directory):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    d = sub.add_parser("demo")
+    d = sub.add_parser("demo", help="Generate a small synthetic training fixture")
     d.add_argument("--out", type=Path, required=True)
-    a = sub.add_parser("audit")
-    a.add_argument("--data", type=Path, required=True)
-    a.add_argument("--trait", required=True)
     r = sub.add_parser("run")
     r.add_argument("--data", type=Path, required=True)
     r.add_argument("--trait", required=True)
-    r.add_argument("--config", type=Path, default=Path("configs/pilot.toml"))
+    r.add_argument("--config", type=Path, default=Path("configs/run.toml"))
     r.add_argument("--out", type=Path, required=True)
     r.add_argument("--protocol", choices=["iid", "group"], default="iid")
-    r.add_argument("--mode", choices=["pilot", "formal"], default="pilot")
-    r.add_argument("--splits", type=Path, help="Frozen TSV accession_id/fold manifest")
-    r.add_argument("--source-vcf", type=Path, default=None,
-                   help="Dataset-build reference only: the experiment-run "
-                        "gate does not digest the raw source VCF; it binds "
-                        "the SHA256-bound source-manifest JSON instead")
-    r.add_argument("--registry", type=Path, default=None,
-                   help="Formal v2 gate: trait-resolution registry TSV recomputed via registry_sha256")
-    r.add_argument("--source-manifest", type=Path, default=None,
-                   help="Formal v2 gate: SHA256-bound source-manifest JSON "
-                        "(the VCF-side source audit).  The gate re-binds it "
-                        "and cross-binds the record's VCF identity fields "
-                        "against it; raw-file identity is verified at the "
-                        "dataset-build stage by at_pheno.formal_provenance."
-                        "verify_source_vcf")
+    r.add_argument("--splits", type=Path, help="Single-trait outer folds: accession_id/fold TSV")
     args = parser.parse_args()
     if args.command == "demo":
         demo(args.out)
-    elif args.command == "audit":
-        print(json.dumps(load_dataset(args.data, args.trait)[-1], ensure_ascii=False, indent=2))
     else:
         run(args)
 

@@ -1,68 +1,54 @@
 # at_pheno
 
-拟南芥自然群体的超高维基因组预测：研究标记密度、低频变异与基因组结构何时带来可泛化的表型预测收益。
+本项目研究拟南芥基因组标记密度对表型预测精度的影响，比较加性基因组模型在不同单核苷酸多态性（SNP）数量下的预测表现。主要比较为 25 万个常见 SNP 与训练样本中全部符合筛选条件的常见 SNP。
 
-2026-09-22重新初始化。当前交付为**研究审计、修订工作协议、可运行CPU基线，以及官方HDF5/七项表型的文件级样本审计**；尚未开始真实全基因组模型比较，不含生物学结论。原稿已原样保留在 [archive](docs/archive/2026-09-22/)。
-
-## 从这里阅读
-
-- [研究审计与重启决策](docs/研究审计与重启决策.md)：原方案的问题、证据与修改理由。
-- [修订综述](docs/拟南芥超高维基因组预测研究综述.md)、[实验协议v0.1](docs/拟南芥超高维基因组预测_实验设计方案.md)：研究主线与执行边界。
-- [文献证据表](docs/文献证据表.md)：已核验、待核验和来源链接。
-- [数据契约](docs/数据契约.md)、[实施路线](docs/实施路线与验收.md)：数据准备与阶段验收。
-- [数据获取与预处理](docs/数据获取与预处理.md)：原始数据下载地址/校验值与全流水线重放指令；数据本体不入Git。
-- [BiMSGP参考](reference/README.md)：课题组开源仓库固定版本与代码审计。
-- [初始化验证与数据初审](docs/初始化验证与数据初审.md)：历史初审、真实表型计数及Kas-2重复记录。
-- [方向不变 HDF5 分支](docs/方向不变HDF5分支.md)：binary HDF5 能做与不能做的预备分析边界。
-- [正式实验门禁](docs/正式实验门禁.md)：全库表型可行性审计、近亲块标定和确认性统计的未完成项。
-
-## 安装与自检
-
-使用Python≥3.11与uv；本机裸`python`指向无法启动的旧环境，因此使用`uv run`。
-
-```bash
-uv sync --locked --extra dev
-uv run pytest -q
-uv run at-pheno --help
-```
-
-合成数据端到端验证（输出目录必须不存在；已运行时换一个run_id）：
-
-```bash
-uv run at-pheno demo --out data/interim/demo
-uv run at-pheno audit --data data/interim/demo --trait synthetic
-uv run at-pheno run --data data/interim/demo --trait synthetic --config configs/smoke.toml --out runs/demo_iid
-uv run at-pheno run --data data/interim/demo --trait synthetic --config configs/smoke.toml --protocol group --out runs/demo_group
-```
-
-真实数据按契约准备后，可用`configs/pilot.toml`运行。当前实现均值基线、分块additive kernel ridge、每个内外训练折独立QC/填补、哈希嵌套密度和内层选参。输出原尺度OOF、划分、QC、调参及输入/代码校验值。它是pilot，不等于已实施完整实验协议。
-
-## 小型公开数据快照
-
-```bash
-uv run python scripts/snapshot_arapheno.py --out data/raw/arapheno_snapshot --phenotype 261 262
-```
-
-工具下载表型目录及候选原始记录并写URL/时间/SHA256；不下载基因组大文件、不自动汇总重复或选正式性状。初始快照保存在`data/raw/arapheno_2026-09-22/`，大文件和原始数据不入Git。
-
-基因型大文件（1001 Genomes v3.1 VCF/HDF5，约20G）与全部预处理/构建/冻结步骤（下载、解压、审计、正式int8矩阵构建、表型可行性扫描、划分/近克隆/密度冻结）的重放指令与SHA256校验值见 [数据获取与预处理](docs/数据获取与预处理.md)。
-
-HDF5审计需额外依赖：`uv sync --locked --extra dev --extra data`。真实数据准备进展与来源见 [样本交集审计](docs/真实数据准备与候选面板.md)。
+基因型来自 1001 Genomes v3.1，表型来自 AraPheno。处理后的基因型矩阵包含 1135 个材料和 10,707,430 个位点；四项研究性状合计有 3020 条材料与性状对应的观测值。
 
 ## 目录
 
 ```text
-configs/              pilot和软件自检配置
-src/at_pheno/         数据审计、训练内QC、分块kernel、嵌套评估
-tests/                泄漏隔离与数值正确性测试
-scripts/              小型公开数据快照
-docs/                 工作稿、证据、原稿归档、数据/运行审计
-data/raw/             原始下载（忽略）
-data/interim/         中间数据与合成测试（忽略）
-data/processed/       按契约处理的真实输入（忽略）
-data/manifests/       可入库的小型来源记录
-reference/BiMSGP/     独立上游checkout（忽略；固定SHA见reference/README）
-runs/                 每次运行的原始预测与完整记录（忽略）
+preprocessing/
+  README.md       数据来源、处理方法与文件格式
+  raw/            原始基因型、样本信息和表型数据
+  processed/      基因型矩阵、表型表、位点信息和样本划分
+src/at_pheno/     数据读取与加性核模型
+configs/          运行参数和研究分析规则
+tests/            数值计算与训练、测试数据隔离的测试
+docs/研究设计.md  研究问题、实验设计和统计方法
+environment.yml   Miniconda 环境定义
 ```
 
-已核验HDF5为1135×10,709,949，且全文件只含0/1；全库 AraPheno feasibility registry 已生成并计入非有限值过滤，候选性状的来源级重复/汇总语义（390/261/262 组）仍按 registry TSV 状态保持未决。运行时有 106 项本地测试（CI 侧 105 passed + 1 skipped，被跳过的检查依赖 61 MB 的 catalog 工件，该工件不入 Git），含物理排序、样本列序、group 嵌套隔离、二态全位点翻转不变性、minority-state 边界扫描、formal v2 provenance binding（6 项运行重算 + record-only 交叉绑定）与 int8 ALT-dosage 存储契约（GT round-trip fixture，-1 不进入任何 dosage 统计）。**剩余 P0-1（formal VCF→int8 ALT-dosage conversion 尚未实施）**：int8、值域 `{-1,0,1,2}`、shape `sample×variant`，禁止先经 float32 全量矩阵生成；raw-file 审计由 build 阶段 `at_pheno.formal_provenance.verify_source_vcf` 承担，执行 gate 不重读 19 GB 源 VCF。HDF5 尚无完整 density prediction runner；PC-only、LD/RKHS/多核、标准GBLUP外部一致性及结构化SSM也尚未实现；不以合成自检或理论复杂度宣称真实全密度预测成功。
+原始数据和处理产物保存在本地，不随 Git 仓库分发。克隆仓库后，需将数据放入上述对应目录。数据来源及文件说明见 [数据预处理](preprocessing/README.md)，实验方法见 [研究设计](docs/研究设计.md)。
+
+## 安装
+
+在仓库根目录使用 Miniconda 创建并激活环境：
+
+```bash
+conda env create --prefix ./.venv --file environment.yml
+conda activate "$PWD/.venv"
+```
+
+已有环境时直接执行激活命令。环境定义中的可编辑安装会提供 `at-pheno` 命令。
+
+## 使用
+
+以下示例生成小规模合成数据，并运行加性核模型：
+
+```bash
+at-pheno demo --out /tmp/at-pheno-demo
+at-pheno run --data /tmp/at-pheno-demo --trait synthetic --config configs/smoke.toml --out /tmp/at-pheno-run
+python -m pytest -q
+```
+
+运行真实数据时，`--data` 指向 `preprocessing/processed`，`--trait` 使用 AraPheno 性状编号。默认参数文件为 `configs/run.toml`；输出目录必须是尚不存在的新目录。
+
+`run` 实现了训练样本内的位点筛选、缺失值填补、内层交叉验证选参和外层预测。输出包括样本划分、所选位点、参数选择结果、逐样本预测和评价指标。
+
+该命令使用固定正则化参数网格，并自行生成内层划分；它尚未实现研究设计中的物理分箱位点排序、参数搜索范围扩展及统计区间估计。`--splits` 接受单项性状的一份外层划分表，不能直接读取包含多项性状和内层划分的合并表。现有命令适用于模型开发与计算验证，不能据此报告完整研究设计的结论。
+
+## 开发约定
+
+数据处理内容集中在 `preprocessing/`，模型实现集中在 `src/at_pheno/`。修改优先在现有模块中完成；同一用途只维护一份说明和一套参数来源。
+
+检查围绕具体改动执行。已确认的数据不因目录移动而重新下载或全量校验；输入内容或相关计算方法发生变化时，检查受影响的部分。运行结果写入独立目录，避免覆盖原始数据与已有产物。
