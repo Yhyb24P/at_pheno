@@ -1,0 +1,92 @@
+[
+  {
+    "status": "COMPLETED",
+    "fold": 1,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 388.9058151600184,
+    "peak_rss_bytes": 11574575104,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 2,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 378.70659107598476,
+    "peak_rss_bytes": 11587440640,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 3,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 377.5271059299703,
+    "peak_rss_bytes": 11595497472,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 4,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 378.8239944369998,
+    "peak_rss_bytes": 11599249408,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 5,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 379.447495143977,
+    "peak_rss_bytes": 11604901888,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 6,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 379.51537328300765,
+    "peak_rss_bytes": 11611529216,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 7,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 379.60251446499024,
+    "peak_rss_bytes": 11623542784,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 8,
+    "train_samples": 14290,
+    "test_samples": 1588,
+    "seconds": 376.88710479601286,
+    "peak_rss_bytes": 11625005056,
+    "peak_cuda_bytes": 2344031744
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 9,
+    "train_samples": 14291,
+    "test_samples": 1587,
+    "seconds": 381.2572778229951,
+    "peak_rss_bytes": 11636244480,
+    "peak_cuda_bytes": 2344110592
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 10,
+    "train_samples": 14291,
+    "test_samples": 1587,
+    "seconds": 391.7627074610209,
+    "peak_rss_bytes": 11645042688,
+    "peak_cuda_bytes": 2344110592
+  }
+]

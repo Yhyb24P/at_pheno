@@ -1,0 +1,46 @@
+[
+  {
+    "model": "GBLUP-centered",
+    "reference": "BiMSGP-published",
+    "baseline_pooled_mse": 3.909644977855693,
+    "reference_pooled_mse_reconstructed": 4.052652803245076,
+    "baseline_mean_fold_pcc": 0.7151568449357214,
+    "reference_mean_fold_pcc": 0.7171006909520555,
+    "improved_mse_folds": 8,
+    "relative_mse_gain": 0.035287460419721195,
+    "scope": "descriptive matched-fold summary; historical epoch selection differs; no paired individual errors"
+  },
+  {
+    "model": "GBLUP-centered",
+    "reference": "GBLUP-published",
+    "baseline_pooled_mse": 3.909644977855693,
+    "reference_pooled_mse_reconstructed": 3.8719957699674543,
+    "baseline_mean_fold_pcc": 0.7151568449357214,
+    "reference_mean_fold_pcc": 0.7182467464141096,
+    "improved_mse_folds": 0,
+    "relative_mse_gain": -0.009723463073038285,
+    "scope": "descriptive matched-fold summary; historical epoch selection differs; no paired individual errors"
+  },
+  {
+    "model": "Ridge-standardized",
+    "reference": "BiMSGP-published",
+    "baseline_pooled_mse": 3.89640883617368,
+    "reference_pooled_mse_reconstructed": 4.052652803245076,
+    "baseline_mean_fold_pcc": 0.7163021822283995,
+    "reference_mean_fold_pcc": 0.7171006909520555,
+    "improved_mse_folds": 8,
+    "relative_mse_gain": 0.03855350424943549,
+    "scope": "descriptive matched-fold summary; historical epoch selection differs; no paired individual errors"
+  },
+  {
+    "model": "Ridge-standardized",
+    "reference": "GBLUP-published",
+    "baseline_pooled_mse": 3.89640883617368,
+    "reference_pooled_mse_reconstructed": 3.8719957699674543,
+    "baseline_mean_fold_pcc": 0.7163021822283995,
+    "reference_mean_fold_pcc": 0.7182467464141096,
+    "improved_mse_folds": 0,
+    "relative_mse_gain": -0.006305034317336311,
+    "scope": "descriptive matched-fold summary; historical epoch selection differs; no paired individual errors"
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "config": {
+    "version": "soybase_legacy_protein_baselines_v1",
+    "genotypes": "../fprior/data/soybase/geno-big.parquet",
+    "phenotypes": "../fprior/data/soybase/pheno_selected.parquet",
+    "folds": "../fprior/data/soybase/folds/soybase_protein.csv",
+    "bimsgp_results": "../references/BiMSGP/paper_results/soybase/r/soybase_BiMSGP_E100_L1_B32_d64_protein.txt",
+    "upstream_gblup_results": "../references/BiMSGP/paper_results/soybase/r/soybase_gblup_lambda1.0_protein.txt",
+    "output": "../runs/soybase_legacy_protein_baselines_v1",
+    "trait": "protein",
+    "expected_samples": 15878,
+    "expected_markers": 42195,
+    "models": [
+      "GBLUP-centered",
+      "Ridge-standardized"
+    ],
+    "inner_folds": 4,
+    "seed": 20261014,
+    "rho_grid": [
+      1e-05,
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "rho_bounds": [
+      1e-08,
+      10000.0
+    ],
+    "relative_residual_max": 1e-08,
+    "cg_max_iter": 3000,
+    "blas_threads": 12,
+    "device": "cuda",
+    "historical_cohort_scope": "full_legacy_cohort_as_requested; not_current_sealed_validation",
+    "bimsgp_action": "reuse_published_fold_metrics_without_training_or_inference"
+  },
+  "inputs": {
+    "genotypes": {
+      "path": "../fprior/data/soybase/geno-big.parquet",
+      "bytes": 110466621,
+      "sha256": "5d33a09cad05124f294c263afe71fc7d05b91f32c5c4081db7d8e9407ff00737"
+    },
+    "phenotypes": {
+      "path": "../fprior/data/soybase/pheno_selected.parquet",
+      "bytes": 233721,
+      "sha256": "074317db0d4b655e6c5b79a5c34c6b7f37203c70988d6ae01dd7c3240c3e407e"
+    },
+    "folds": {
+      "path": "../fprior/data/soybase/folds/soybase_protein.csv",
+      "bytes": 180918,
+      "sha256": "d0fb13037caa35a610ccfb63575b23e1e24db5dd63f3b0122f4b646f2bceb4ef"
+    },
+    "bimsgp_results": {
+      "path": "../references/BiMSGP/paper_results/soybase/r/soybase_BiMSGP_E100_L1_B32_d64_protein.txt",
+      "bytes": 772,
+      "sha256": "051558a3904d5971ad1d0edf59d6e4e99502f35e78d5236a8d58af588f721fd6"
+    },
+    "upstream_gblup_results": {
+      "path": "../references/BiMSGP/paper_results/soybase/r/soybase_gblup_lambda1.0_protein.txt",
+      "bytes": 1159,
+      "sha256": "b99d9d784b6fd72011b101690a6ee442357fc6e8f596b715ceaa3e953f6ce410"
+    }
+  },
+  "source": {
+    "benchmark.py": "b13ed65d1a9580f62cb35009e9498485fc283e080f4be561de500f16e0636df3",
+    "preprocessing/legacy.py": "0eb28ad721b85a6d849e07e2802a71fd68066e221865369db1c6913390533e65",
+    "experiment.py": "2d405ae7bb2241011618f9d3feb0a16cad1ebffbdd65ae360f870447310cb943",
+    "preprocessing/panels.py": "0ae7da051b2daab97a6b551689fe78d2b2f05bbf8f35825588a97c18038262fb"
+  }
+}

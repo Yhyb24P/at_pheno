@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETED",
+  "samples": 15878,
+  "markers": 42195,
+  "outer_folds": 10,
+  "baseline_encodings": [
+    "GBLUP-centered",
+    "Ridge-standardized"
+  ],
+  "bimsgp_retrained": false,
+  "bimsgp_inference_run": false,
+  "official_sealed_label_file_read": false,
+  "scope": "full_legacy_cohort_as_requested; not_current_sealed_validation"
+}

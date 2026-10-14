@@ -1,0 +1,23 @@
+{
+  "version": "soybase_legacy_protein_baselines_v1",
+  "genotypes": "../fprior/data/soybase/geno-big.parquet",
+  "phenotypes": "../fprior/data/soybase/pheno_selected.parquet",
+  "folds": "../fprior/data/soybase/folds/soybase_protein.csv",
+  "bimsgp_results": "../references/BiMSGP/paper_results/soybase/r/soybase_BiMSGP_E100_L1_B32_d64_protein.txt",
+  "upstream_gblup_results": "../references/BiMSGP/paper_results/soybase/r/soybase_gblup_lambda1.0_protein.txt",
+  "output": "../runs/soybase_legacy_protein_baselines_v1",
+  "trait": "protein",
+  "expected_samples": 15878,
+  "expected_markers": 42195,
+  "models": ["GBLUP-centered", "Ridge-standardized"],
+  "inner_folds": 4,
+  "seed": 20261014,
+  "rho_grid": [0.00001, 0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
+  "rho_bounds": [0.00000001, 10000.0],
+  "relative_residual_max": 1e-8,
+  "cg_max_iter": 3000,
+  "blas_threads": 12,
+  "device": "cuda",
+  "historical_cohort_scope": "full_legacy_cohort_as_requested; not_current_sealed_validation",
+  "bimsgp_action": "reuse_published_fold_metrics_without_training_or_inference"
+}

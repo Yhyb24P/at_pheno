@@ -1,0 +1,12 @@
+{
+  "status": "PASSED",
+  "prediction_rows": 31756,
+  "samples_per_encoding": 15878,
+  "outer_folds": 10,
+  "original_fold_assignment_preserved": true,
+  "pooled_metrics_recomputed": true,
+  "max_final_relative_residual": 9.993984599381679e-10,
+  "selected_boundary_count": 0,
+  "targeted_tests_passed": 4,
+  "bimsgp_training_or_inference_run": false
+}

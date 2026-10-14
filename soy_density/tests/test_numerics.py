@@ -52,3 +52,17 @@ def test_group_folds_keep_members_together():
     np.testing.assert_array_equal(a, group_folds(groups, 4, 101, 'full'))
     for g in set(groups):
         assert len(set(a[groups == g])) == 1
+
+
+def test_legacy_scaling_matches_training_only_standard_scaler():
+    sys.path.append(str(Path(__file__).resolve().parents[2] / 'fprior/.deps'))
+    from sklearn.preprocessing import StandardScaler
+    from preprocessing.legacy import fit_transform, transform
+    x = np.array([[1, 3, 2], [2, 3, 1], [3, 3, 3], [99, -20, 5]], dtype=np.float32)
+    train = np.arange(3)
+    mean, scale = fit_transform(x, train, True)
+    reference = StandardScaler().fit(x[train])
+    np.testing.assert_allclose(mean, reference.mean_)
+    np.testing.assert_allclose(scale, reference.scale_)
+    np.testing.assert_allclose(transform(x, np.arange(4), np.arange(3), mean, scale),
+                               reference.transform(x), atol=1e-6)
