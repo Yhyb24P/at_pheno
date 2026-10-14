@@ -1,0 +1,15 @@
+{
+  "status": "PASSED",
+  "prediction_rows": 140200,
+  "development_samples": 14020,
+  "outer_folds": 10,
+  "inner_training_samples": 12618,
+  "full_strategy_predictions_identical": true,
+  "panel_nesting_passed": true,
+  "group_isolation_passed": true,
+  "pooled_mse_and_pcc_recomputed": true,
+  "max_final_relative_residual": 9.994238227335853e-10,
+  "selected_grid_boundary_count": 0,
+  "sealed_prediction_rows": 0,
+  "targeted_numerical_tests_passed": 3
+}

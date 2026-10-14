@@ -1,0 +1,56 @@
+{
+  "config": {
+    "version": "soy_density_v1",
+    "data": "../fprior/preprocessing/processed/soybase_official_v2",
+    "dosages_sha256": "a6ef3c9823215b5b270a089d9de15da8358b213dae0efa5a9cba3801e54018f6",
+    "output": "../runs/soy_density_v1",
+    "seed": 20261014,
+    "budgets": [
+      2000,
+      5000,
+      10000,
+      20000,
+      41346
+    ],
+    "inner_folds": 4,
+    "call_rate_min": 0.98,
+    "maf_min": 0.0,
+    "physical_bin_bp": 1000000,
+    "ld_window_bp": 1000000,
+    "ld_r2_threshold": 0.8,
+    "rho_grid": [
+      0.0001,
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "rho_bounds": [
+      1e-08,
+      10000.0
+    ],
+    "relative_residual_max": 1e-08,
+    "cg_max_iter": 3000,
+    "bootstrap_replicates": 2000,
+    "blas_threads": 12,
+    "device": "cuda"
+  },
+  "inputs": {
+    "samples.tsv": "6d52d69faeea7d89d0501ab2a05643682d97611a505037df9e78cd9fd0662eb1",
+    "variants.tsv": "191f3d0858dfc4728a898034bb487a3b381f805ed99eab64b15fb41454305bb7",
+    "splits.tsv": "3aff36fbcbfc2945cd2d4b9207f0c35410e80bf42b92579f22ccd99434d138a7",
+    "dosages.npy": {
+      "sha256": "a6ef3c9823215b5b270a089d9de15da8358b213dae0efa5a9cba3801e54018f6",
+      "bytes": 3322068536,
+      "mtime_ns": 1791705597393622300
+    },
+    "partition_manifest.json": "192eaa75f3205b599409e9c2c16fc0958ebf29bdcf6fc84682d5740f26c96044"
+  },
+  "implementation": {
+    "soy_density/experiment.py": "2d405ae7bb2241011618f9d3feb0a16cad1ebffbdd65ae360f870447310cb943",
+    "soy_density/preprocessing/panels.py": "0ae7da051b2daab97a6b551689fe78d2b2f05bbf8f35825588a97c18038262fb",
+    "fprior/src/fprior/io.py": "713d859fd1b2d1506f78cbef6e8fb4e2094095b6b6d1135dbc42bc600b40c93e"
+  }
+}

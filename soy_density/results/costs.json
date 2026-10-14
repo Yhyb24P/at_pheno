@@ -1,0 +1,92 @@
+[
+  {
+    "status": "COMPLETED",
+    "fold": 0,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 741.3512768720102,
+    "peak_host_rss_bytes": 15232774144,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 1,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 743.81985265002,
+    "peak_host_rss_bytes": 15232233472,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 2,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 719.9706530990079,
+    "peak_host_rss_bytes": 15314198528,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 3,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 721.7582694260054,
+    "peak_host_rss_bytes": 15315251200,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 4,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 720.4384777569794,
+    "peak_host_rss_bytes": 15315251200,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 5,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 721.5438366910093,
+    "peak_host_rss_bytes": 15315251200,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 6,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 721.109079598973,
+    "peak_host_rss_bytes": 15315251200,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 7,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 721.042484553007,
+    "peak_host_rss_bytes": 15318646784,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 8,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 722.0941737000248,
+    "peak_host_rss_bytes": 15320719360,
+    "peak_cuda_allocated_bytes": 3971193344
+  },
+  {
+    "status": "COMPLETED",
+    "fold": 9,
+    "train_samples": 12618,
+    "test_samples": 1402,
+    "seconds": 720.4766323089716,
+    "peak_host_rss_bytes": 15320719360,
+    "peak_cuda_allocated_bytes": 3971193344
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "status": "COMPLETED",
+  "development_samples": 14020,
+  "outer_folds": 10,
+  "workflows": 10,
+  "unique_full_panel_fit": true,
+  "sealed_phenotypes_read": false,
+  "sealed_genotypes_used_for_ld": false,
+  "bootstrap_scope": "fixed predictions; fold-stratified whole groups; no refitting"
+}

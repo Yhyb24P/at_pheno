@@ -1,0 +1,12 @@
+{
+  "python": "3.12.14 | packaged by Anaconda, Inc. | (main, Aug 27 2026, 14:46:43) [GCC 14.3.0]",
+  "numpy": "2.5.3",
+  "torch": "2.14.1+cu130",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "additional_packages": {
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "threadpoolctl": "3.7.0",
+    "pytest": "9.1.1"
+  }
+}

@@ -1,0 +1,254 @@
+[
+  {
+    "kind": "adjacent",
+    "reference_strategy": "physical",
+    "reference_budget": 2000,
+    "candidate_strategy": "physical",
+    "candidate_budget": 5000,
+    "delta_mse": -0.38213750290963777,
+    "relative_mse_gain": 0.08317258630989935,
+    "delta_mse_ci95": [
+      -0.4496165726835467,
+      -0.31778830935783936
+    ],
+    "relative_gain_ci95": [
+      0.07045460200381627,
+      0.09594768499776894
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "physical",
+    "reference_budget": 5000,
+    "candidate_strategy": "physical",
+    "candidate_budget": 10000,
+    "delta_mse": -0.1390222384968507,
+    "relative_mse_gain": 0.03300328970275838,
+    "delta_mse_ci95": [
+      -0.1743679138458813,
+      -0.10520172583668089
+    ],
+    "relative_gain_ci95": [
+      0.02544595611129001,
+      0.040500329405482725
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "physical",
+    "reference_budget": 10000,
+    "candidate_strategy": "physical",
+    "candidate_budget": 20000,
+    "delta_mse": -0.12758124435008816,
+    "relative_mse_gain": 0.03132094028985092,
+    "delta_mse_ci95": [
+      -0.16388820522424805,
+      -0.09734279277577247
+    ],
+    "relative_gain_ci95": [
+      0.024210666906430527,
+      0.03932680449845702
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "physical",
+    "reference_budget": 20000,
+    "candidate_strategy": "physical",
+    "candidate_budget": 41346,
+    "delta_mse": -0.04761151232695196,
+    "relative_mse_gain": 0.012066464039649514,
+    "delta_mse_ci95": [
+      -0.06574948623403196,
+      -0.028459118673735455
+    ],
+    "relative_gain_ci95": [
+      0.007325016832586491,
+      0.01658564502556032
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "full_vs_sparse",
+    "reference_strategy": "physical",
+    "reference_budget": 2000,
+    "candidate_strategy": "physical",
+    "candidate_budget": 41346,
+    "delta_mse": -0.6963524980835286,
+    "relative_mse_gain": 0.1515617750364108,
+    "delta_mse_ci95": [
+      -0.8057496167898167,
+      -0.6098879215224128
+    ],
+    "relative_gain_ci95": [
+      0.13572750386188398,
+      0.16910691116094487
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "ld",
+    "reference_budget": 2000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 5000,
+    "delta_mse": -0.40895398317936915,
+    "relative_mse_gain": 0.08954398243320714,
+    "delta_mse_ci95": [
+      -0.49715509387805945,
+      -0.3315782524275991
+    ],
+    "relative_gain_ci95": [
+      0.07476400531640594,
+      0.10543933369433113
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "ld",
+    "reference_budget": 5000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 10000,
+    "delta_mse": -0.1913753782510798,
+    "relative_mse_gain": 0.04602449738164057,
+    "delta_mse_ci95": [
+      -0.23534132924548093,
+      -0.1529913258525046
+    ],
+    "relative_gain_ci95": [
+      0.03750092373809453,
+      0.05521040751497318
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "ld",
+    "reference_budget": 10000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 20000,
+    "delta_mse": -0.08373230737923644,
+    "relative_mse_gain": 0.021108570771680622,
+    "delta_mse_ci95": [
+      -0.10818909035370405,
+      -0.05875328539865096
+    ],
+    "relative_gain_ci95": [
+      0.014810826115727009,
+      0.02700700543200629
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "adjacent",
+    "reference_strategy": "ld",
+    "reference_budget": 20000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 41346,
+    "delta_mse": 0.01514797764702896,
+    "relative_mse_gain": -0.0039010893676410577,
+    "delta_mse_ci95": [
+      -0.0007902779144265717,
+      0.030506466078961594
+    ],
+    "relative_gain_ci95": [
+      -0.00788375185110054,
+      0.00019853280719240684
+    ],
+    "improved_outer_folds": 3
+  },
+  {
+    "kind": "full_vs_sparse",
+    "reference_strategy": "ld",
+    "reference_budget": 2000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 41346,
+    "delta_mse": -0.6689136911626565,
+    "relative_mse_gain": 0.14646439030899344,
+    "delta_mse_ci95": [
+      -0.7794888630213485,
+      -0.58058376616399
+    ],
+    "relative_gain_ci95": [
+      0.13046336068205427,
+      0.1654378309818778
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "strategy",
+    "reference_strategy": "physical",
+    "reference_budget": 2000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 2000,
+    "delta_mse": -0.027438806920872187,
+    "relative_mse_gain": 0.005972082089536646,
+    "delta_mse_ci95": [
+      -0.04723830027427723,
+      -0.007910518938336946
+    ],
+    "relative_gain_ci95": [
+      0.0017267192891704318,
+      0.010348105606045703
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "strategy",
+    "reference_strategy": "physical",
+    "reference_budget": 5000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 5000,
+    "delta_mse": -0.05425528719060357,
+    "relative_mse_gain": 0.012879975034342494,
+    "delta_mse_ci95": [
+      -0.09360513163687764,
+      -0.019866439142755658
+    ],
+    "relative_gain_ci95": [
+      0.004941007101550369,
+      0.02169061687643898
+    ],
+    "improved_outer_folds": 8
+  },
+  {
+    "kind": "strategy",
+    "reference_strategy": "physical",
+    "reference_budget": 10000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 10000,
+    "delta_mse": -0.10660842694483263,
+    "relative_mse_gain": 0.026172155568348867,
+    "delta_mse_ci95": [
+      -0.1482700135593939,
+      -0.07427332517444774
+    ],
+    "relative_gain_ci95": [
+      0.018332862443352138,
+      0.03546682921685459
+    ],
+    "improved_outer_folds": 10
+  },
+  {
+    "kind": "strategy",
+    "reference_strategy": "physical",
+    "reference_budget": 20000,
+    "candidate_strategy": "ld",
+    "candidate_budget": 20000,
+    "delta_mse": -0.06275948997398091,
+    "relative_mse_gain": 0.015905504612360327,
+    "delta_mse_ci95": [
+      -0.08412148131089422,
+      -0.0414783252964876
+    ],
+    "relative_gain_ci95": [
+      0.010633327608028863,
+      0.021107704981444347
+    ],
+    "improved_outer_folds": 10
+  }
+]

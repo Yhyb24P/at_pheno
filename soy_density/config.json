@@ -1,0 +1,21 @@
+{
+  "version": "soy_density_v1",
+  "data": "../fprior/preprocessing/processed/soybase_official_v2",
+  "dosages_sha256": "a6ef3c9823215b5b270a089d9de15da8358b213dae0efa5a9cba3801e54018f6",
+  "output": "../runs/soy_density_v1",
+  "seed": 20261014,
+  "budgets": [2000, 5000, 10000, 20000, 41346],
+  "inner_folds": 4,
+  "call_rate_min": 0.98,
+  "maf_min": 0.0,
+  "physical_bin_bp": 1000000,
+  "ld_window_bp": 1000000,
+  "ld_r2_threshold": 0.8,
+  "rho_grid": [0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
+  "rho_bounds": [0.00000001, 10000.0],
+  "relative_residual_max": 1e-8,
+  "cg_max_iter": 3000,
+  "bootstrap_replicates": 2000,
+  "blas_threads": 12,
+  "device": "cuda"
+}
